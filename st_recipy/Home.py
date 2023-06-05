@@ -1,7 +1,32 @@
+if __name__ == "__main__":
+    import sys
+    from pathlib import Path
+    # To be able to import recipy 
+    path = str(Path(__file__, "..", "..").resolve())
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+from pathlib import Path
 import streamlit as st
+import utils
 
 st.title("Recipe Engine")
 st.subheader("Improve your cuisine by using the graph power!!")
+
+base_path = Path(__file__, "..", "..", "recipy", "data", "graphs", "foodcom").resolve()
+
+st.session_state["bipartite_graph_path"] = base_path / "bipartite_recipe_ingredient.graphml"
+st.session_state["ingredient_pmi_graph_path"] = base_path / "ingredient_node_reduced_pmi_weighted.graphml"
+
+loader = st.empty()
+with st.spinner("Setting up the kitchen..."):
+    loader.write("Loading cookbook...")
+    bipartite_graph_path = st.session_state["bipartite_graph_path"]
+    utils.get_graph(bipartite_graph_path)
+    loader.write("Preparing ingredients...")
+    ingredient_pmi_graph_path = st.session_state["ingredient_pmi_graph_path"]
+    utils.get_graph(ingredient_pmi_graph_path)
+    loader.write("")
 
 # TODO Change some of the text to actually the features present on the application
 st.markdown("""

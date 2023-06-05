@@ -5,3 +5,4 @@ recipy/raw_data/*
 !recipy/raw_data/README.md
 
 recipy/data
+__pycache__
