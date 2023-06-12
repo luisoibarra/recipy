@@ -28,8 +28,10 @@ def return_ingredient_graph_ingredient_given_query(ingredient_query: str, graph:
     """
     filtered_list = []
 
+    bipartite = "type" in graph.nodes[next(iter(graph.nodes))]
+
     # Filter
-    for ingredient in graph.nodes:
+    for ingredient in [x for x in graph.nodes if not bipartite or graph.nodes[x]["type"] == "ingredient"]:
         if contain_filter(ingredient_query, ingredient):
             filtered_list.append(ingredient)
 

@@ -1,6 +1,30 @@
 import nltk
 from typing import List, Tuple
+import networkx as nx
+from typing import List, Callable, Dict, Tuple, Literal
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
 
+def get_vector_representation(estimator: TfidfVectorizer, query: str):
+    return estimator.transform([query])
+
+def extract_tfidf_info(bipartite_graph: nx.Graph, type_filter: Literal["recipe"] | Literal["ingredient"], represent_with_neighbors=False) -> Tuple[Dict[str, List[int]], np.matrix, TfidfVectorizer]:
+    """
+    Returns tf-idf information about a graph. Can return information about the recipe or the ingredient according to 
+    `type_filter`. If `represent_with_neighbors` then the vector representation will be the names of the neighbors.
+    """
+
+    other_type = "recipe" if type_filter == "ingredient" else "ingredient"
+    nodes = [x for x in bipartite_graph if bipartite_graph.nodes[x]["type"] == type_filter]
+    
+    estimator = TfidfVectorizer()
+    if represent_with_neighbors:
+        neighbors = [" ".join([x.removesuffix(f"_{other_type}") for x in bipartite_graph.neighbors(node)]) for node in nodes]
+        tfidf = estimator.fit_transform(neighbors)
+    else:
+        representation = [node.removesuffix(f"_{type_filter}") for node in nodes]
+        tfidf = estimator.fit_transform(representation)
+    return {x: tfidf[i] for i, x in enumerate(nodes)}, tfidf, estimator
 
 def extract_ingredients_with_modifiers_nltk_grammar(ingredient: str) -> List[Tuple[str, str]]:
     """

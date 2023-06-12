@@ -1,7 +1,9 @@
-from typing import List, Dict, Iterable, Tuple
+from typing import List, Dict, Iterable, Tuple, Callable
 import networkx as nx
 import random
 import math
+
+import numpy as np
 
 
 def build_recipe_graph(json: Dict, recipe_probability=1.0) -> nx.Graph:
@@ -123,3 +125,52 @@ def build_ingredient_recipe_graph(json: dict, bipartite=True) -> nx.Graph:
                             ingredient["nombre"] + ("_ingredient" if bipartite else ""))
 
     return G_json
+
+
+def build_recipe_recipe_graph(bipartite_graph: nx.Graph, weight_threshold=0.0) -> nx.Graph:
+    """
+    Builds a recipe to recipe graph with the edges been the jaccard similarity between the ingredients. If the 
+    similarity is below the `weight_threshold` then no edge will be added
+    """
+    recipes: List[str] = [
+        x for x in bipartite_graph if bipartite_graph.nodes[x]["type"] == "recipe"]
+
+    g = nx.Graph()
+
+    for recipe in recipes:
+        recipe1_ingredients_names_set = set(bipartite_graph.neighbors(recipe))
+        # Get the related recipes connected by at least one ingredient
+        for level, nodes in enumerate(nx.bfs_layers(bipartite_graph, [recipe])):
+            if level == 2:
+                # Filter the calculated nodes
+                nodes = [
+                    node for node in nodes if not g.has_edge(node, recipe)]
+
+                for node in nodes:
+                    recipe2_ingredients_names = list(
+                        bipartite_graph.neighbors(node))
+                    common_recipes = recipe1_ingredients_names_set.intersection(
+                        recipe2_ingredients_names)
+                    all_common_recipes = recipe1_ingredients_names_set.union(
+                        recipe2_ingredients_names)
+                    if common_recipes:
+                        jaccard = len(common_recipes) / len(all_common_recipes)
+                        if jaccard >= weight_threshold:
+                            g.add_edge(recipe, node, weight=jaccard)
+                break
+    nx.relabel_nodes(g, {x: x.removesuffix("_recipe")
+                     for x in recipes}, copy=False)
+    return g
+
+
+def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[dict], np.array], similarity: Callable[[np.array], float], similarity_threshold: float) -> nx.Graph:
+    vectors = { recipe: recipe_vectorizer(json[recipe]) for recipe in json }
+    G = nx.Graph()
+    recipe_list = list(vectors)
+    G.add_nodes_from(recipe_list)
+    for i, recipe1 in enumerate(recipe_list):
+        for recipe2 in recipe_list[i+1:]:
+            sim = similarity(vectors[recipe1], vectors[recipe2])
+            if sim >= similarity_threshold:
+                G.add_edge(recipe1, recipe2, weight=sim)
+    return G

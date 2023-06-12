@@ -1,7 +1,29 @@
 import networkx as nx
 from typing import List
-from .ranking import levenshtein_ranking, degree_ranking
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import numpy as np
+from .ranking import levenshtein_ranking, degree_ranking, tfidf_ranking
 from .filters import contain_filter
+
+def return_ingredient_tfidf_given_query(ingredient_query: str, vectorizer: TfidfVectorizer, tfidf_matrix: np.matrix, ingredient_list: List[str], max_amount: int = 100) -> List[str]:
+    """
+    Returns a ranked list with the ingredients that matches the query in the graph.
+    """
+
+    ranked_list = tfidf_ranking(vectorizer, tfidf_matrix, ingredient_list, ingredient_query, max_amount)
+
+    return [x[1] for x in ranked_list]
+
+
+def return_recipe_tfidf_given_query(recipe_query: str, vectorizer: TfidfVectorizer, tfidf_matrix: np.matrix, recipe_list: List[str], max_amount: int = 100) -> List[str]:
+    """
+    Returns a ranked list with the recipes that matches the query in the graph.
+    """
+
+    ranked_list = tfidf_ranking(vectorizer, tfidf_matrix, recipe_list, recipe_query, max_amount)
+
+    return [x[1] for x in ranked_list]
 
 
 def return_ingredient_given_query(ingredient_query: str, graph: nx.Graph, max_amount: int = 100) -> List[str]:
