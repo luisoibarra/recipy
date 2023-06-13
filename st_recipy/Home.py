@@ -26,6 +26,12 @@ with st.spinner("Setting up the kitchen..."):
     loader.write("Preparing ingredients...")
     ingredient_pmi_graph_path = st.session_state["ingredient_pmi_graph_path"]
     utils.get_graph(ingredient_pmi_graph_path)
+    loader.write("Matching ingredients with ingredients...")
+    utils.get_ingredient_vectorizer(bipartite_graph_path)
+    loader.write("Matching recipes with recipes...")
+    utils.get_recipe_vectorizer(bipartite_graph_path)
+    loader.write("Matching recipes with ingredients...")
+    utils.get_ingredient_to_recipe_vectorizer(bipartite_graph_path)
     loader.write("")
 
 # TODO Change some of the text to actually the features present on the application
