@@ -17,7 +17,27 @@
   - Vectorial
     - TF-IDF
 
-- [ ] Usar el tfidf en streamlit
+- [x] Usar el tfidf en streamlit
 - [ ] Hacer un autoencoder simple con convolucionales y luego si algo con transformer.
 - [ ] BUSCAR MANERA DE REDUCIR LA CANTIDAD DE RECETASSSSSS
   - Definir metrica asociada a los ingredientes connectados
+
+## Propuesta
+
+1. Receta-Receta Semantico
+    - Disminuir recetas: (Ranking de recetas)
+    - Embedding semantico
+    - Se hace el grafo
+
+2. Ingrediente-Acci'on (Intruccion)
+    - Sacar los pares ingrediente-accion y ingrediente-accion-ingredinete
+    - Se hace el grafo con pesos normalizados
+    - Se pregunta
+
+3. Substitution Network
+    - Sacar pares de ignredientes substituidos
+    - Sacar aumentos/disminuciones de cantidades 
+
+4. Probar el k-clique con el grafo pmi.
+
+5. Llenar esas paginas (Recipe details y Ingredient Details)

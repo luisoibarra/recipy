@@ -163,8 +163,8 @@ def build_recipe_recipe_graph(bipartite_graph: nx.Graph, weight_threshold=0.0) -
     return g
 
 
-def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[dict], np.array], similarity: Callable[[np.array], float], similarity_threshold: float) -> nx.Graph:
-    vectors = { recipe: recipe_vectorizer(json[recipe]) for recipe in json }
+def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[dict], np.array], similarity: Callable[[np.array, np.array], float], similarity_threshold: float) -> nx.Graph:
+    vectors = {recipe: recipe_vectorizer(json[recipe]) for recipe in json}
     G = nx.Graph()
     recipe_list = list(vectors)
     G.add_nodes_from(recipe_list)
@@ -174,3 +174,7 @@ def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[d
             if sim >= similarity_threshold:
                 G.add_edge(recipe1, recipe2, weight=sim)
     return G
+
+
+def build_recipe_recipe_vector_similarity(json: dict, vector_key: str, decay: float = 0.1, similarity_threshold: float = 0.5):
+    return build_general_recipe_recipe_graph(json, lambda x: np.array(x[vector_key]), lambda x, y: np.exp(-np.linalg.norm(x - y) * decay), similarity_threshold=similarity_threshold)
