@@ -176,5 +176,8 @@ def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[d
     return G
 
 
-def build_recipe_recipe_vector_similarity(json: dict, vector_key: str, decay: float = 0.1, similarity_threshold: float = 0.5):
-    return build_general_recipe_recipe_graph(json, lambda x: np.array(x[vector_key]), lambda x, y: np.exp(-np.linalg.norm(x - y) * decay), similarity_threshold=similarity_threshold)
+def build_weighted_graph_from_edge_list(edge_list: list[(float, str, str)]) -> nx.Graph:
+    G = nx.Graph()
+    for w, x, y in edge_list:
+        G.add_edge(x, y, weight=w)
+    return G

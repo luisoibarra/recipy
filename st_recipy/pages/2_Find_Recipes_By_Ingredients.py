@@ -15,11 +15,11 @@ saved_ingredients: List[str] = st.session_state["selected_ingredients"]
 bipartite_graph_path = st.session_state["bipartite_graph_path"]
 graph = utils.get_graph(bipartite_graph_path)
 
-search_options = ["Name Similarity", "Tf-Idf Similarity"]
+search_options = ["Tf-Idf Similarity", "Name Similarity"]
 selected = st.sidebar.radio("Ingredient Match Mode:", search_options)
 
 recipe_search_options = ["Ingredient Intersection", "Tf-Idf Ingredient Similarity"]
-recipe_selected = st.sidebar.radio("Recipe Match Mode:", search_options)
+recipe_selected = st.sidebar.radio("Recipe Match Mode:", recipe_search_options)
 
 
 ingredients, tfidf, matrix = utils.get_ingredient_vectorizer(bipartite_graph_path)
@@ -28,7 +28,7 @@ recipes_list, recipe_tfidf, recipe_matrix = utils.get_ingredient_to_recipe_vecto
 ingredient_query = st.text_input("Search ingredients to add to the basket!!")
 
 if ingredient_query:
-    if search_options.index(selected) == 1:
+    if search_options.index(selected) == 0:
         all_ingredients = recipy.return_ingredient_tfidf_given_query(ingredient_query, tfidf, matrix, ingredients)
     else:
         all_ingredients = recipy.return_ingredient_graph_ingredient_given_query(
@@ -49,7 +49,7 @@ for ingredient in saved_ingredients:
 
 if saved_ingredients:
     st.subheader("Recipes:")
-    if search_options.index(selected) == 1:
+    if recipe_search_options.index(recipe_selected) == 1:
         recipes = recipy.return_recipe_tfidf_given_query(" ".join(saved_ingredients), recipe_tfidf, recipe_matrix, recipes_list)
     else:
         recipes = recipy.return_available_recipes_given_ingredients(

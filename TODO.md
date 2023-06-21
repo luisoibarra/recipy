@@ -18,13 +18,13 @@
     - TF-IDF
 
 - [x] Usar el tfidf en streamlit
-- [ ] Hacer un autoencoder simple con convolucionales y luego si algo con transformer.
-- [ ] BUSCAR MANERA DE REDUCIR LA CANTIDAD DE RECETASSSSSS
+- [x] Hacer un autoencoder simple con convolucionales y luego si algo con transformer.
+- [x] BUSCAR MANERA DE REDUCIR LA CANTIDAD DE RECETASSSSSS
   - Definir metrica asociada a los ingredientes connectados
 
 ## Propuesta
 
-1. Receta-Receta Semantico
+1. Receta-Receta Semantico [x]
     - Disminuir recetas: (Ranking de recetas)
     - Embedding semantico
     - Se hace el grafo
@@ -41,3 +41,20 @@
 4. Probar el k-clique con el grafo pmi.
 
 5. Llenar esas paginas (Recipe details y Ingredient Details)
+
+## Para terminar
+
+- [ ] Informe
+  - Empezar repositorio de informe
+  - Abstract
+  - Introduction
+  - Why?
+  - How?
+  - Implementation
+  - Fotos de grafos y de las estadísticas
+  - Conclusions
+- [ ] Definir los grafos a usar en streamlit, que tengan consistencia
+  - Bipartito 5000
+  - Semantic Sim 5000 0.9
+  - Ingrediente Jaccard, PMI, completos? Revisar la cantidad de ingredientes.
+  - Todo de foodcom.

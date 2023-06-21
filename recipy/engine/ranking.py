@@ -7,6 +7,9 @@ import networkx as nx
 
 NodeType = object
 
+def exponential_similarity(x: np.array, y: np.array, decay=6):
+    return np.exp(-np.linalg.norm(x - y) * decay)
+
 
 def levenshtein_ranking(query: str, items: List[str], max_amount=100) -> List[Tuple[float, str]]:
     """
@@ -165,3 +168,13 @@ def get_recipe_ranking(json_graph: dict, metric1: str = "rating", metric2: str =
     f1_metric = [(f1(x, y), recipe) for x, y, recipe in zip(metric1, metric2, json_graph)]
 
     return sorted(f1_metric, reverse=True)
+
+
+def get_edge_similarity_vector_ranking(vector_dict: dict, similarity: Callable[[np.array, np.array], float]) -> List[Tuple[float, str, str]]:
+    recipes = list(vector_dict)
+    sim = []
+    for i, x in enumerate(recipes):
+        for y in recipes[i+1:]:
+            s = similarity(vector_dict[x], vector_dict[y])
+            sim.append((s, x, y))
+    return sorted(sim, reverse=True)

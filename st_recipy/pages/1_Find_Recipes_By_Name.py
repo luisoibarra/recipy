@@ -8,7 +8,7 @@ from streamlit.source_util import get_pages
 st.title("Find Recipes By Name")
 st.subheader("What's on the menu?")
 
-search_options = ["Name Similarity", "Tf-Idf Similarity"]
+search_options = ["Tf-Idf Similarity", "Name Similarity"]
 selected = st.sidebar.radio("Recipe Match Mode:", search_options)
 
 bipartite_graph_path = st.session_state["bipartite_graph_path"]
@@ -18,7 +18,7 @@ recipes, tfidf, matrix = utils.get_recipe_vectorizer(bipartite_graph_path)
 recipe_query = st.text_input("Write a recipe name!!")
 
 if recipe_query:
-    if search_options.index(selected) == 1:
+    if search_options.index(selected) == 0:
         recipes = recipy.return_recipe_tfidf_given_query(recipe_query, tfidf, matrix, recipes)
     else:
         recipes = recipy.return_recipe_given_query(recipe_query, graph=graph)

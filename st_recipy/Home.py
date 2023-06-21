@@ -17,8 +17,7 @@ base_path = Path(__file__, "..", "..", "recipy", "data", "graphs", "foodcom").re
 
 st.session_state["reduced_bipartite_graph_path"] = base_path / "bipartite_recipe_ingredient_reduced_5000.graphml"
 st.session_state["reduced_recipe_graph_path"] = base_path / "recipe_node_weighted_reduced_5000.graphml"
-# st.session_state["bipartite_graph_path"] = st.session_state["reduced_bipartite_graph_path"]
-# TOO MUCH MEMORY WITH BOTH BIPARTITE GRAPHS
+st.session_state["reduced_recipe_semantic_graph_path"] = base_path / "recipe_node_semantic_weighted_reduced_5000_sim_cutoff_0.9.graphml"
 st.session_state["bipartite_graph_path"] = base_path / "bipartite_recipe_ingredient.graphml"
 st.session_state["ingredient_pmi_graph_path"] = base_path / "ingredient_node_reduced_pmi_weighted.graphml"
 
@@ -30,6 +29,9 @@ with st.spinner("Setting up the kitchen..."):
     reduced_bipartite_graph_path = st.session_state["reduced_bipartite_graph_path"]
     utils.get_graph(reduced_bipartite_graph_path)
     loader.write("Getting recipes ingredients...")
+    reduced_recipe_semantic_graph_path = st.session_state["reduced_recipe_semantic_graph_path"]
+    utils.get_graph(reduced_recipe_semantic_graph_path)
+    loader.write("Indexing recipes meaning...")
     reduced_recipe_graph_path = st.session_state["reduced_recipe_graph_path"]
     utils.get_graph(reduced_recipe_graph_path)
     loader.write("Preparing ingredients...")
