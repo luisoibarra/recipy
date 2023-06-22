@@ -7,6 +7,9 @@ import networkx as nx
 
 NodeType = object
 
+def exponential_similarity(x: np.array, y: np.array, decay=6):
+    return np.exp(-np.linalg.norm(x - y) * decay)
+
 
 def levenshtein_ranking(query: str, items: List[str], max_amount=100) -> List[Tuple[float, str]]:
     """
@@ -96,7 +99,8 @@ def get_recipe_cutoff(bipartite_graph: nx.Graph, recipe_cutoff_percentage=0.8) -
     """
     Returns the recipes that represents the `recipe_cutoff_percentage` of the importance total, sorted by importance
     """
-    recipe_map = {x: "_|_".join([y.removesuffix("_ingredient") for y in bipartite_graph.neighbors(x)]) for x in bipartite_graph if bipartite_graph.nodes[x]["type"] == "recipe"}
+    recipe_map = {x: "_|_".join([y.removesuffix("_ingredient") for y in bipartite_graph.neighbors(
+        x)]) for x in bipartite_graph if bipartite_graph.nodes[x]["type"] == "recipe"}
     tfidf = TfidfVectorizer(tokenizer=lambda x: x.split("_|_"))
     # recipe_map = {x: " ".join([y.removesuffix("_ingredient") for y in bipartite_graph.neighbors(
     #     x)]) for x in bipartite_graph if bipartite_graph.nodes[x]["type"] == "recipe"}
@@ -141,3 +145,36 @@ def get_recipe_cutoff(bipartite_graph: nx.Graph, recipe_cutoff_percentage=0.8) -
 
     return recipe_importance_list[:cutoff_index]
 
+
+def get_recipe_ranking(json_graph: dict, metric1: str = "rating", metric2: str = "cantidad_comentarios") -> List[Tuple[float, str]]:
+    """
+    Returns the ranked list of the F1 score between the normalized `metric1` and `metric2` values for `json_graph`.
+
+    `json_graph`: Json graph with `metric1` and `metric2` keys withing the first key index
+    `metric1`: Key for a non negative number value. 
+    `metric2`: Key for a non negative number value. 
+    """
+
+    def f1(a, b):
+        return 2 * (a * b) / (a + b)
+
+    def max_normalization(metric):
+        max_metric = max(metric)
+        return [x/max_metric for x in metric]
+
+    metric1 = max_normalization([json_graph[x][metric1] for x in json_graph])
+    metric2 = max_normalization([json_graph[x][metric2] for x in json_graph])
+
+    f1_metric = [(f1(x, y), recipe) for x, y, recipe in zip(metric1, metric2, json_graph)]
+
+    return sorted(f1_metric, reverse=True)
+
+
+def get_edge_similarity_vector_ranking(vector_dict: dict, similarity: Callable[[np.array, np.array], float]) -> List[Tuple[float, str, str]]:
+    recipes = list(vector_dict)
+    sim = []
+    for i, x in enumerate(recipes):
+        for y in recipes[i+1:]:
+            s = similarity(vector_dict[x], vector_dict[y])
+            sim.append((s, x, y))
+    return sorted(sim, reverse=True)

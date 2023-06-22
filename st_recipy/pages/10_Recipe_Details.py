@@ -12,5 +12,5 @@ if recipe:
 else:
     st.header("No selected recipe")
     st.write("Wow, you are not supposed to be here. Select a recipe from one of the other pages.")
-    if st.button("Find Recipes"):
-        switch_page("Find Recipes")
+    if st.button("Find Recipes By Name"):
+        switch_page("Find Recipes By Name")
