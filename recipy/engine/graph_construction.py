@@ -2,7 +2,8 @@ from typing import List, Dict, Iterable, Tuple, Callable
 import networkx as nx
 import random
 import math
-
+import nltk
+from collections import Counter
 import numpy as np
 
 
@@ -181,3 +182,53 @@ def build_weighted_graph_from_edge_list(edge_list: list[(float, str, str)]) -> n
     for w, x, y in edge_list:
         G.add_edge(x, y, weight=w)
     return G
+
+
+import pandas as pd
+def build_ingredients_action_graph(raw_recipe: pd.DataFrame):
+    lemmatizer = nltk.WordNetLemmatizer()
+
+    progress, total = 0, len(raw_recipe)
+    pairs = []
+    
+    for _, row in raw_recipe.iterrows():
+        progress += 1
+        #print("Processed: ", (progress * 100 / total))
+        if (progress / total * 100).__floor__() > ((progress - 1) / total * 100).__floor__():
+            print("Processed: ", (int)(progress / total * 100), "%")
+
+        # Take and lemmatize ingredients to compare them 
+        # with the ingredients in the instructions
+        ingredients: List[str] = eval(row["ingredients"])
+        lemmatized_ingredients = [lemmatizer.lemmatize(x, pos="n") for x in ingredients] 
+        #print(ingredients, type(ingredients))
+
+        # Preprocess the instructions to extract all verbs and nouns
+        # that belong to the ingredients list
+        steps = eval(row["steps"])
+        #print(steps, type(steps))
+        tokenized_steps = (nltk.tokenize.word_tokenize(step) for step in steps)
+        tagged_steps = nltk.pos_tag_sents(tokenized_steps, tagset="universal")
+        lemmatized_steps = (((lemmatizer.lemmatize(x, pos="n" if y == "NOUN" else "v"), y) for (x, y) in step) for step in tagged_steps)
+        filtered_steps =([(x, y) for (x, y) in step if y == "VERB" or x in lemmatized_ingredients or x == "ingredient"] for step in lemmatized_steps)
+        
+        for step in filtered_steps:
+            # Select the nouns that are applicable to each verb
+            if len(step) == 0: continue
+            
+            verbs = [i for i, (_, y) in enumerate(step) if y == "VERB"]
+            for i, j in zip(verbs,verbs[1:]):
+                (verb, _), *nouns = step[i: j]
+                filtered_nouns = [x for (x, _) in nouns]
+                if "ingredient" in filtered_nouns: pairs.extend((verb, x) for x in lemmatized_ingredients)
+                else: pairs.extend((verb, x) for x in filtered_nouns)
+
+    edges = Counter(pairs)
+    verbs = Counter(x for (x, _) in pairs)
+    ingredients = Counter(y for (_, y) in pairs)
+
+    graph = nx.Graph()
+    for (u, v), w in edges.items():
+        graph.add_edge(u, v, weight= w / (verbs[u] + ingredients[v] - w))
+
+    return graph
