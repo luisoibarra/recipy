@@ -3,7 +3,9 @@ __all__ = ["return_available_recipes_given_ingredients", "return_ingredient_give
            "return_ingredients_given_recipe", "return_recipe_given_query", "import_graph",
            "return_most_similar_ingredients", "return_ingredient_graph_ingredient_given_query",
            "extract_tfidf_info", "get_vector_representation", "return_recipe_tfidf_given_query",
-           "return_ingredient_tfidf_given_query", "return_most_similar_recipes",]
+           "return_ingredient_tfidf_given_query", "return_most_similar_recipes",
+           "get_node_neighbourhood", "get_node_louvain_partition", "get_node_louvain_communities",
+           "actions_similarity"]
 
 # Import the functions to be exported
 from .engine.recipe_ingredient_bipartite_queries import (return_available_recipes_given_ingredients,
@@ -20,6 +22,11 @@ from .engine.processors import (extract_tfidf_info, get_vector_representation)
 from .engine.recipe_queries import (return_most_similar_recipes,)
 
 from .engine.graph_io import import_graph
+
+from .engine.ingredient_replacement import (get_node_neighbourhood, 
+                                            get_node_louvain_partition,
+                                            get_node_louvain_communities,
+                                            actions_similarity)
 
 # Add any necessary code for initialization
 def __initialize():
