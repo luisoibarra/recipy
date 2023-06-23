@@ -84,3 +84,9 @@ def actions_similarity(actions_graph: nx.Graph, x: str, y:str):
     sty = set(get_percent_cuttof(adjy, 30))
 
     return len(stx.intersection(sty)) / len(stx.union(sty))
+
+
+def get_ingredient_replacements(actions_graph: nx.Graph, ingredients_graph: nx.Graph, node: str, method):
+    relevant = method(ingredients_graph, node)
+    relevant.sort(key=lambda x: actions_similarity(actions_graph, x, node), reverse=True)
+    return relevant[1:11]
