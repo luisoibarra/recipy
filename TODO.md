@@ -34,13 +34,15 @@
     - Se hace el grafo con pesos normalizados
     - Se pregunta
 
-3. Substitution Network
+3. Substitution Network. (Opcional, probablemente no)
     - Sacar pares de ignredientes substituidos
-    - Sacar aumentos/disminuciones de cantidades 
+    - Sacar aumentos/disminuciones de cantidades
 
 4. Probar el k-clique con el grafo pmi.
 
 5. Llenar esas paginas (Recipe details y Ingredient Details)
+    - La info se puede extraer del json.
+        - Ingredientes, Instrucciones, etc.
 
 ## Para terminar
 
@@ -58,3 +60,7 @@
   - Semantic Sim 5000 0.9
   - Ingrediente Jaccard, PMI, completos? Revisar la cantidad de ingredientes.
   - Todo de foodcom.
+- [ ] Mejorar README.md
+  - Poner fotos de los features
+  - Explicar opciones
+  - Etc.
