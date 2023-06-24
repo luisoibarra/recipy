@@ -86,7 +86,11 @@ def actions_similarity(actions_graph: nx.Graph, x: str, y:str):
     return len(stx.intersection(sty)) / len(stx.union(sty))
 
 
+from .processors import extract_ingredients_with_modifiers_nltk_grammar as normalize_ingredient
 def get_ingredient_replacements(actions_graph: nx.Graph, ingredients_graph: nx.Graph, node: str, method):
-    relevant = method(ingredients_graph, node)
+    (normalized_ingredient, _), *_ = normalize_ingredient(node)
+    if not normalized_ingredient in ingredients_graph.nodes(): return []
+
+    relevant = method(ingredients_graph, normalized_ingredient)
     relevant.sort(key=lambda x: actions_similarity(actions_graph, x, node), reverse=True)
     return relevant[1:11]

@@ -228,6 +228,11 @@ def build_ingredients_action_graph(raw_recipe: pd.DataFrame):
     ingredients = Counter(y for (_, y) in pairs)
 
     graph = nx.Graph()
+    for v, w in verbs.items():
+        graph.add_node(v, type="action")
+    for v, w in ingredients.items():
+        graph.add_node(v, type="ingredient")
+
     for (u, v), w in edges.items():
         graph.add_edge(u, v, weight= w / (verbs[u] + ingredients[v] - w))
 
