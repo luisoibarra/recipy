@@ -15,6 +15,7 @@ st.subheader("Improve your cuisine by using the graph power!!")
 
 base_path = Path(__file__, "..", "..", "recipy", "data", "graphs", "foodcom").resolve()
 
+st.session_state["action_ingredient_graph_path"] = base_path / "ingredient_actions_graph.graphml"
 st.session_state["reduced_bipartite_graph_path"] = base_path / "bipartite_recipe_ingredient_reduced_5000.graphml"
 st.session_state["reduced_recipe_graph_path"] = base_path / "recipe_node_weighted_reduced_5000.graphml"
 st.session_state["reduced_recipe_semantic_graph_path"] = base_path / "recipe_node_semantic_weighted_reduced_5000_sim_cutoff_0.9.graphml"
@@ -44,6 +45,9 @@ with st.spinner("Setting up the kitchen..."):
     utils.get_recipe_vectorizer(reduced_bipartite_graph_path)
     loader.write("Matching recipes with ingredients...")
     utils.get_ingredient_to_recipe_vectorizer(bipartite_graph_path)
+    loader.write("Reading recipe instructions")
+    action_ingredient_graph_path = st.session_state["action_ingredient_graph_path"]
+    utils.get_graph(action_ingredient_graph_path)
     loader.write("")
 
 # TODO Change some of the text to actually the features present on the application

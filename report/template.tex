@@ -53,12 +53,7 @@
 % Affiliations are output in the \date{} command
 \date{\footnotesize\textsuperscript{\textbf{1}}Facultad de Matemática y Computación, Universidad de La Habana}
 
-% Full-width abstract
-\renewcommand{\maketitlehookd}{%
-	\begin{abstract}
-		\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit. Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor.
-	\end{abstract}
-}
+
 
 %----------------------------------------------------------------------------------------
 
@@ -70,24 +65,12 @@
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
-\section{Introduction}
+\section{Introducción}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit.
+El procesamiento de redes complejas es un campo en constante evolución que permite la representación y análisis de sistemas complejos a través de la creación de grafos. En este trabajo, se explorará el uso de un conjunto de recetas para la creación de grafos que permitan extraer información relevante sobre las mismas. A través del análisis de estas redes, se espera obtener una comprensión más profunda de las interacciones y relaciones entre los elementos del sistema. 
 
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Donec laoreet nisl vel risus lacinia elementum non nec lacus. Nullam luctus, nulla volutpat ultricies ultrices, quam massa placerat augue, ut fringilla urna lectus nec nibh. Vestibulum efficitur condimentum orci a semper. Pellentesque ut metus pretium lacus maximus semper.
+Se plantea la construcción de distintos sistemas que permitan realizar distintos análisis sobre el dataset Food.com, a partir de los cuales se definirán y evaluarán un conjunto de consultas para la extracción de información relevante. Por último, se propone la elaboración de una herramienta informática que permita acceder de forma sencilla a la información extraída.
 
-Fusce varius orci ac magna dapibus porttitor. In tempor leo a neque bibendum sollicitudin. Nulla pretium fermentum nisi, eget sodales magna facilisis eu. Praesent aliquet nulla ut bibendum lacinia. Donec vel mauris vulputate, commodo ligula ut, egestas orci. Suspendisse commodo odio sed hendrerit lobortis. Donec finibus eros erat, vel ornare enim mattis et. Donec finibus dolor quis dolor tempus consequat. Mauris fringilla dui id libero egestas, ut mattis neque ornare. Ut condimentum urna pharetra ipsum consequat, eu interdum elit cursus. Vivamus scelerisque tortor et nunc ultricies, id tincidunt libero pharetra. Aliquam eu imperdiet leo. Morbi a massa volutpat velit condimentum convallis et facilisis dolor.
-
-\begin{equation}
-	\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
-	\label{eq:example}
-\end{equation}
-
-Automatically referencing an equation number using its label: Equation \ref{eq:example}.
-
-In hac habitasse platea dictumst. Curabitur mattis elit sit amet justo luctus vestibulum. In hac habitasse platea dictumst. Pellentesque lobortis justo enim, a condimentum massa tempor eu. Ut quis nulla a quam pretium eleifend nec eu nisl. Nam cursus porttitor eros, sed luctus ligula convallis quis. Nam convallis, ligula in auctor euismod, ligula mauris fringilla tellus, et egestas mauris odio eget diam. Praesent sodales in ipsum eu dictum. Aenean vel enim ipsum. Fusce ut felis at eros sagittis bibendum mollis lobortis libero.
-
-Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ultrices non tincidunt et, tincidunt ut quam. Integer luctus posuere est, non maximus ante dignissim quis. Nunc a cursus erat. Curabitur suscipit nibh in tincidunt sagittis. Nam malesuada vestibulum quam id gravida. Proin ut dapibus velit. Vestibulum eget quam quis ipsum semper convallis. Duis consectetur nibh ac diam dignissim, id condimentum enim dictum. Nam aliquet ligula eu magna pellentesque, nec sagittis leo lobortis. Aenean tincidunt dignissim egestas.
 
 %------------------------------------------------
 
@@ -109,7 +92,22 @@ confeccionar la receta dada.
 
 \subsection{Grafo Bipartito Ingrediente-Acción}
 
-TODO
+Se define como un grafo bipartito y no dirigido, formado por dos grupos: los ingredientes y el conjunto de acciones que se emplean sobre esos ingredientes. 
+
+Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com}, se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo \emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que pertenece cada acción y cada ingrediente (fig. \ref{fig:ingredient-action-graph}). 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{action-ingredient-graph.png}
+	\caption{Grafo Ingrediente-Acción (8223 nodos y 55547 aristas).}
+	\label{fig:ingredient-action-graph}
+\end{figure}
+
+Dicho de otra forma,
+
+$$w(X, Y) = \frac{|P_{<X,Y>}|}{|P_X \cup P_Y|}$$
+
+Donde $w(X,Y)$ representa el peso de la arista entre la acción $X$ y el ingrediente $Y$, $P_{<X,Y>}$ representa el conjunto de los pares $<X,Y>$ y $P_X$ y $P_Y$ representan los pares en los que se encuentra X e Y respectivamente.
+
 
 \subsection{Grafo Receta-Receta}
 
@@ -341,6 +339,18 @@ de la relevancia.
 	vectores de la entidad. Las entidades son vectorizadas mediante una tabla TF-IDF. 
 \end{itemize}
 
+\subsection{Reemplazo de ingredientes}
+
+Dado un ingrediente, es posible hacer una lista ordenada de aquellos otros por los que puede ser sustituido. Esto se logra tomando la partición del grafo \emph{ingrediente-ingrediente} a la cual pertenece el ingrediente dado para obtener una lista de posibles reemplazos. Luego, se ordenan estos de acuerdo al índice de Jaccard de la cantidad de acciones comunes entre ambos ingredientes, utilizando el grafo de $<$acción, ingrediente$>$. De esta forma se obtiene una medida, para cada elemento de la lista obtenida, de cuan seguro es usar dicho ingrediente como reemplazo del original. 
+
+Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro de texto y se le muestra una lista con los elementos por los cuales puede ser sustituido (fig. \ref{fig:ingredient-replacement}).
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{ingredient-replacement.jpeg}
+	\caption{Página de reemplazo de ingredientes.}
+	\label{fig:ingredient-replacement}
+\end{figure}
+
 \section{Datos}
 
 Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes elementos (Tabla \ref{tab:data_features}):
@@ -561,6 +571,10 @@ Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam
 \printbibliography % Output the bibliography
 
 %----------------------------------------------------------------------------------------
+
+\section{Conclusiones}
+
+En este trabajo se estudió e implementó una herramienta informática para la extracción de información relevante del dataset de recetas Food.com a partir del uso de diversos algoritmos de Inteligancia Artificial, Sistemas de Recuperación de Información y Análisis de Redes Complejas. En particular, se construyeron diversos sistemas complejos a partir de las relaciones existentes entre los ingredientes, las recetas, los pasos de preparación y los \textit{reviews} de usuarios existentes en el dataset mencionado, a partir de los cuales fue posible realizar consultas como: Qué ingredientes puede sustituir un ingrediente dado?, Qué recetas puedo elaborar dada esta lista de ingredientes?, Qué recetas son similares a una receta dada?, entre otros. 
 
 \section{Anexos}
 
