@@ -45,7 +45,7 @@ for ingredient in saved_ingredients:
     col1, col2 = st.columns(2)
     if col1.button(ingredient):
         utils.visit_ingredient_details(ingredient)
-    col2.button("Remove", key=f"add_{ingredient}_ingredient", on_click=lambda: ingredients.remove(ingredient))
+    col2.button("Remove", key=f"add_{ingredient}_ingredient", on_click=lambda: saved_ingredients.remove(ingredient))
 
 if saved_ingredients:
     st.subheader("Recipes:")

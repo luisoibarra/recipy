@@ -91,15 +91,13 @@ Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ult
 
 %------------------------------------------------
 
-\section{Desarrollo}
-
-\subsection{Grafos}
+\section{Grafos}
 
 Para la conformación de la base de datos para el motor de búsqueda se contruyen diferentes grafos que
 contienen información relacionada a la interacción entre los componentes que de una manera u otra conforman
 las recetas.
 
-\subsubsection{Grafo Bipartito Receta-Ingrediente}
+\subsection{Grafo Bipartito Receta-Ingrediente}
 
 Se define como un grafo no dirigido en el cual sus nodos representan
 recetas o ingredientes y sus aristas representan la participación de un ingrediente en la confección de la receta.
@@ -109,11 +107,11 @@ En este grafo, el grado (\textit{degree}) del nodo representa la cantidad de rec
 el ingrediente dado, y de manera recíproca también representa la cantidad de ingredientes utilizados para 
 confeccionar la receta dada.
 
-\subsubsection{Grafo Bipartito Ingrediente-Acción}
+\subsection{Grafo Bipartito Ingrediente-Acción}
 
 TODO
 
-\subsubsection{Grafo Receta-Receta}
+\subsection{Grafo Receta-Receta}
 
 Se define como un grafo no dirigido en el cual sus nodos representan recetas y sus aristas
 están ponderadas con una métrica de similitud entre recetas. Para este tipo de grafo se confeccionaron dos 
@@ -124,7 +122,7 @@ versiones basadas en diferentes métricas:
 	\item Similitud vectorial entre representación semántica de recetas.
 \end{enumerate}
 
-\textbf{Similitud de Jaccard}
+\subsubsection{Similitud de Jaccard}
 
 Para la confección de este grafo las aristas son ponderadas mediante la similitud de Jaccard (Ecuación \ref{eq:jaccard_sim}).
 
@@ -138,7 +136,7 @@ Para la confección de este grafo las aristas son ponderadas mediante la similit
 	\item Se calcula la similitud de Jaccard para cada par de nodos obteniendo el peso de la arista correspondiente.
 \end{enumerate}
 
-\textbf{Similitud vectorial entre representación semántica de recetas}
+\subsubsection{Similitud vectorial entre representación semántica de recetas}
 
 Para la confección de este grafo se realizaron un conjunto de pasos para la vectorización semántica de las recetas.
 
@@ -164,7 +162,7 @@ Para la confección de este grafo se realizaron un conjunto de pasos para la vec
 	\label{fig:encoder_decoder_small}
 \end{figure}
 
-\subsubsection{Grafo Ingrediente-Ingrediente}
+\subsection{Grafo Ingrediente-Ingrediente}
 
 Se define como un grafo no dirigido en el cual sus nodos representan ingredientes y sus aristas
 están ponderadas con una métrica de similitud entre ingredientes. 
@@ -177,7 +175,7 @@ Para este tipo de grafo se confeccionaron tres versiones basadas en diferentes m
 	\item Similitud por \textit{Pointwise mutual information} (PMI) definida en \textcite{teng2012recipe}.
 \end{enumerate}
 
-\textbf{Similitud de Jaccard}
+\subsubsection{Similitud de Jaccard}
 
 La confección de este grafo se realiza de manera similar a su contraparte de recetas.
 
@@ -191,7 +189,7 @@ Este grafo provee información acerca de cómo están asociados los ingredientes
 cercano a 1 indica que los ingredientes pertenecientes a la arista se comparten en la mayoría de las recetas en que son
 utilizados. En caso de estar cercano a 0, indica que no coinciden en casi ninguna receta dichos ingredientes.
 
-\textbf{Similitud vectorial entre representación sintáctica de ingredientes}
+\subsubsection{Similitud vectorial entre representación sintáctica de ingredientes}
 
 En la confección de este grafo se realiza una transformación del nombre de los ingredientes a vectores mediante
 un conteo de las palabras presentes en su nombre.
@@ -213,7 +211,7 @@ Estas distintas variantes, por lo general poseen nombres compuestos con la clase
 	\item Queso Gouda
 \end{itemize}
 
-\textbf{Similitud por PMI}
+\subsubsection{Similitud por PMI}
 
 En la confección de este grafo se calcula el PMI \autocite{teng2012recipe} (Ecuación \ref{eq:pmi}) entre cada par de ingredientes:
 
@@ -256,6 +254,12 @@ $$
 $$
 p(a|b) > p(a) \quad p(b|a) > p(b)
 $$
+
+\section{Ranking}
+
+El ranking se lleva a cabo para tomar la información más relevante de los datos de acuerdo a un criterio.
+Se emplea para dos funcionalidades, disminuir la cantidad de los nodos de los grafos y recuperar los elementos
+más similares a una consulta dada de los datos.
 	
 \subsection{Ranking de Nodos}
 
@@ -265,9 +269,10 @@ cantidad. Para esto se toman diferentes estrategias en dependencia del tipo de g
 \begin{enumerate}
 	\item Ranking de recetas por valoraciones de usuarios.
 	\item Ranking de ingredientes por ocurrencias acumuladas.
+	\item Ranking de recetas por ingredientes que las usen.
 \end{enumerate}
 
-\textbf{Ranking de recetas por valoraciones de usuarios}
+\subsubsection{Ranking de recetas por valoraciones de usuarios}
 
 Dado un conjunto de valoraciones a recetas dadas por usuarios se procede a definir 
 una medida de importancia con estas. Para esto se realizan los siguintes pasos:
@@ -302,20 +307,29 @@ las valoraciones dadas a la receta $r$ y $R$ es el conjunto de recetas.
 
 Esta métrica previene que recetas con pocas y muy altas valoraciones tengan más importancia que recetas con muchas
 valoraciones pero más bajas. De manera que las recetas más importantes tengan que tener al mismo tiempo una gran 
-cantidad de valoraciones y que estas sean buenas. 
+cantidad de valoraciones y que estas sean buenas (Figura \ref{fig:f1_plot}). 
 
-\textbf{Ranking de ingredientes por ocurrencias acumuladas}
+\subsubsection{Ranking de ingredientes por ocurrencias acumuladas}
 
 Dado un conjunto de ingredientes se toman los que participan en la mayor cantidad de enlaces entre recetas.
 Para realizar el ranking se realizan los siguientes pasos:
 
 \begin{enumerate}
 	\item Ordenar por grado de mayor a menor los nodos ingredientes del grafo bipartito de ingredientes-recetas.
-	\item Seleccionar los ingredientes hasta que la suma total de los grados de los nodos seleccionados represente
-	un porciento fijo de la suma total de todos los grados del grafo.
+	\item Seleccionar los ingredientes, por este orden, hasta que la suma de los grados de los nodos seleccionados 
+	represente un porciento fijo de la suma total de todos los grados del grafo.
 \end{enumerate}
 
+\subsubsection{Ranking de recetas por ingredientes que las usen}
+
+Dado un conjunto de ingredientes se quiere encontrar las recetas que los usen, para esto se toman dos variantes.
+En primer lugar se ordena por la cantidad de ingredientes que tienen las recetas en común con los ingredientes
+requeridos. Esta aproximación lleva a que en casos de que la intersección sea completa se ordene por nombre lo que
+no necesariamente es deseable. El otro método es vectorizar las recetas por sus ingredientes mediante TF-IDF y
+realizar el ranking con la similitud de coseno entre la vectorización TF-IDF de los ingredientes consultados.
+
 \subsection{Ranking de Resultados a Consultas}
+\label{subsec:rank_query}
 
 Para la extracción de ingredientes y recetas dadas una consulta se emplean dos mecanismos para hacer el cálculo
 de la relevancia.
@@ -327,13 +341,7 @@ de la relevancia.
 	vectores de la entidad. Las entidades son vectorizadas mediante una tabla TF-IDF. 
 \end{itemize}
 
-\section{Experimentación y Resultados}
-
-Para la confección del motor de búsqueda de recetas se conformó un paquete de Python, \textbf{recipy}, el cual
-contiene las funciones necesarias para la creación de grafos y consulta de grafos. Para la visualización de los
-resultados se creó una aplicación usando \textbf{streamlit} la cual permite al usuario interactuar con la API.
-
-\subsection{Datos}
+\section{Datos}
 
 Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes elementos (Tabla \ref{tab:data_features}):
 
@@ -353,82 +361,176 @@ Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes eleme
 		Cantidad de Recetas 	 & 555				& 230,186	& 1,312,871	\\
 		Cantidad de Ingredientes & 214	 			& 14,927	& 170,204	\\
 		Cantidad de Pasos 		 & -	 			& 2,248,564	& 9,709,075	\\
-		Cantidad de Comentarios  & -	 			& 1,132,367	&	-		\\
+		Cantidad de Comentarios  & -	 			& 1,132,367	& -			\\
 		\bottomrule
 	\end{tabular}
 	\label{tab:data_features}
 \end{table*}
 
+\subsection{Cocina al Minuto}
+
+Conjunto de datos creado a partir del libro Cocina al Minuto de TODO ALGUIEN. Este presenta pocas 
+muestras y no posee los pasos para la confección de la receta, por lo que no es posible algunos de 
+los análisis.
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_jaccard_weighted.pdf}
+	\caption{Grafo Ingrediente-Ingrediente ponderado con Similitud de Jaccard entre Recetas.}
+	\label{fig:cocina_minuto_ingredient_jaccard}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_pmi_weighted.pdf}
+	\caption{Grafo Ingrediente-Ingrediente ponderado con Métrica de PMI entre Recetas.}
+	\label{fig:cocina_minuto_ingredient_pmi}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/recipe_node_weighted.pdf}
+	\caption{Grafo Receta-Receta ponderado con Similitud de Jaccard entre Ingredientes.}
+	\label{fig:cocina_minuto_recipe_pmi}
+\end{figure}
+
+\subsection{Food.com}
+
+Este conjunto de datos es el más completo con respecto a la variedad de datos que ofrece. Tiene un tamaño mediano
+y es el utilizado en la implementación final del motor de búsqueda ya que se obtiene un balance rapidez y tamaño.
+
+\subsection{RecipeNLG}
+
+El conjunto más 
+
 %------------------------------------------------
+
+\section{Motor de Búsqueda}
+
+Para la confección del motor de búsqueda de recetas se conformó un paquete de Python, \textbf{recipy}, el cual
+contiene las funciones necesarias para la creación y consulta de grafos. Para la visualización de los
+resultados se creó una aplicación usando \textbf{streamlit} la cual permite al usuario interactuar con la API.
+
+En este el usuario puede hacer distintas consultas a los distintos grafos para recuperar la información deseada.
+
+\subsection{Métodos de Búsqueda}
+
+Para los algoritmos funcionen es conveniente tener el nodo exacto sobre el cual se realiza la consulta. Para la
+obtención de dicho nodo a partir de una consulta de texto se emplean los métodos explicados en la sección 
+\nameref{subsec:rank_query} para la obtención de un ranking de posibles candidatos. Con este resultado el usuario
+puede seleccionar el más adecuado y con esta información realizar la consulta a un nodo concreto.
+
+\subsection{Consultas}
+
+La aplicación provee al usuario de un conjunto de consultas predefinidas.
+
+\subsubsection{Buscar recetas por nombre}
+
+Dado una consulta devuelve las primeras mejores 100 recetas de acuerdo al criterio de búsqueda seleccionado
+(Figura \ref{fig:recipe_search_tfidf}).
+Esta consulta se realiza sobre el grafo bipartito de receta-ingrediente, filtrando los nodos recetas. 
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{find_recipe_streamlit.png}
+	\caption{Búsqueda de receta por nombre con ranking TF-IDF.}
+	\label{fig:recipe_search_tfidf}
+\end{figure}
+
+\subsubsection{Buscar ingredientes por nombre y ver recetas que los usan}
+
+Dado una consulta devuelve los primeros mejores 100 ingredientes de acuerdo al criterio de búsqueda seleccionado,
+estos ingredientes luego pueden ser añadidos a una canasta de la cual se seleccionaran los ingredientes para hacer
+la búsqueda de recetas con estos, devolviendo los mejores 100 resultados de acuerdo al segundo criterio seleccionado
+(Figura \ref{fig:ingredient_search_tfidf}).
+Ambas partes de la consulta se realizan sobre el grafo bipartito de receta-ingrediente, filtrando los nodos 
+ingredientes en la primera y calculando las métricas correspondientes en la segunda.
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{find_ingredient_streamlit.png}
+	\caption{Búsqueda de ingredientes por nombre con ranking TF-IDF y de recetas para realizar con estos.}
+	\label{fig:ingredient_search_tfidf}
+\end{figure}
+
+\subsubsection{Buscar ingrediente que mezcle bien con otro}
+
+Dado una consulta devuelve los primeros mejores 100 ingredientes de acuerdo al criterio de búsqueda seleccionado,
+estos ingredientes luego pueden ser seleccionados, devolviendo los mejores 100 ingredientes con los cuales se puede 
+complementar (Figura \ref{fig:complementary_ingredient_search_tfidf}).
+Ambas partes de la consulta se realizan sobre el grafo bipartito de receta-ingrediente, filtrando los nodos 
+ingredientes en la primera y calculando las métricas correspondientes en la segunda.
+
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{find_complementary_ingredient_streamlit.png}
+	\caption{Búsqueda de ingredientes para complementar un ingrediente dado.}
+	\label{fig:complementary_ingredient_search_tfidf}
+\end{figure}
 
 \section{Results}
 
-\begin{table} % Single column table
-	\caption{Example single column table.}
-	\centering
-	\begin{tabular}{l l r}
-		\toprule
-		\multicolumn{2}{c}{Location} \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km & 200km & 422 \\
-		350km & 1000km & 1833 \\
-		600km & 1200km & 890 \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:distcounts}
-\end{table}
+% \begin{table} % Single column table
+% 	\caption{Example single column table.}
+% 	\centering
+% 	\begin{tabular}{l l r}
+% 		\toprule
+% 		\multicolumn{2}{c}{Location} \\
+% 		\cmidrule(r){1-2}
+% 		East Distance & West Distance & Count \\
+% 		\midrule
+% 		100km & 200km & 422 \\
+% 		350km & 1000km & 1833 \\
+% 		600km & 1200km & 890 \\
+% 		\bottomrule
+% 	\end{tabular}
+% 	\label{tab:distcounts}
+% \end{table}
 
-Referencing a table using its label: Table \ref{tab:distcounts}.
+% Referencing a table using its label: Table \ref{tab:distcounts}.
 
-\begin{table*} % Full width table (notice the starred environment)
-	\caption{Example two column table with fixed-width columns.}
-	\centering % Horizontally center the table
-	\begin{tabular}{L{0.2\linewidth} L{0.2\linewidth} R{0.15\linewidth}} % Manually specify column alignments with L{}, R{} or C{} and widths as a fixed amount, usually as a proportion of \linewidth
-		\toprule
-		\multicolumn{2}{c}{Location} \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km & 200km & 422 \\
-		350km & 1000km & 1833 \\
-		600km & 1200km & 890 \\
-		\bottomrule
-	\end{tabular}
-\end{table*}
+% \begin{table*} % Full width table (notice the starred environment)
+% 	\caption{Example two column table with fixed-width columns.}
+% 	\centering % Horizontally center the table
+% 	\begin{tabular}{L{0.2\linewidth} L{0.2\linewidth} R{0.15\linewidth}} % Manually specify column alignments with L{}, R{} or C{} and widths as a fixed amount, usually as a proportion of \linewidth
+% 		\toprule
+% 		\multicolumn{2}{c}{Location} \\
+% 		\cmidrule(r){1-2}
+% 		East Distance & West Distance & Count \\
+% 		\midrule
+% 		100km & 200km & 422 \\
+% 		350km & 1000km & 1833 \\
+% 		600km & 1200km & 890 \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table*}
 
-Aenean feugiat pellentesque venenatis. Sed faucibus tristique tortor vel ultrices. Donec consequat tellus sapien. Nam bibendum urna mauris, eget sagittis justo gravida vel. Mauris nisi lacus, malesuada sit amet neque ut, venenatis tempor orci. Curabitur feugiat sagittis molestie. Duis euismod arcu vitae quam scelerisque facilisis. Praesent volutpat eleifend tortor, in malesuada dui egestas id. Donec finibus ac risus sed pellentesque. Donec malesuada non magna nec feugiat. Mauris eget nibh nec orci congue porttitor vitae eu erat. Sed commodo ipsum ipsum, in elementum neque gravida euismod. Cras mi lacus, pulvinar ut sapien ut, rutrum sagittis dui. Donec non est a metus varius finibus. Pellentesque rutrum pellentesque ligula, vitae accumsan nulla hendrerit ut.
+% Aenean feugiat pellentesque venenatis. Sed faucibus tristique tortor vel ultrices. Donec consequat tellus sapien. Nam bibendum urna mauris, eget sagittis justo gravida vel. Mauris nisi lacus, malesuada sit amet neque ut, venenatis tempor orci. Curabitur feugiat sagittis molestie. Duis euismod arcu vitae quam scelerisque facilisis. Praesent volutpat eleifend tortor, in malesuada dui egestas id. Donec finibus ac risus sed pellentesque. Donec malesuada non magna nec feugiat. Mauris eget nibh nec orci congue porttitor vitae eu erat. Sed commodo ipsum ipsum, in elementum neque gravida euismod. Cras mi lacus, pulvinar ut sapien ut, rutrum sagittis dui. Donec non est a metus varius finibus. Pellentesque rutrum pellentesque ligula, vitae accumsan nulla hendrerit ut.
 
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{Tolmukapea.jpg}
-	\caption{Anther of thale cress (Arabidopsis thaliana), fluorescence micrograph. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Tolmukapea.jpg}{https://commons.wiki-\\media.org/wiki/File:Tolmukapea.jpg}.}
-	\label{fig:tcanther}
-\end{figure}
+% \begin{figure} % Single column figure
+% 	\includegraphics[width=\linewidth]{Tolmukapea.jpg}
+% 	\caption{Anther of thale cress (Arabidopsis thaliana), fluorescence micrograph. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Tolmukapea.jpg}{https://commons.wiki-\\media.org/wiki/File:Tolmukapea.jpg}.}
+% 	\label{fig:tcanther}
+% \end{figure}
 
-Referencing a figure using its label: Figure \ref{fig:tcanther}.
+% Referencing a figure using its label: Figure \ref{fig:tcanther}.
 
-Aenean porttitor eros non pharetra congue. Proin in odio in dolor luctus auctor ac et mi. Etiam euismod mi sed lectus fringilla pretium. Phasellus tristique maximus lectus et sodales. Mauris feugiat ligula quis semper luctus. Nam sit amet felis sed leo fermentum aliquet. Mauris arcu dui, posuere id sem eget, cursus pulvinar mi. Donec nec lacus non lectus fermentum scelerisque et at nibh. Sed tristique, metus ac vestibulum porta, tortor lectus placerat lorem, et convallis tellus dolor eget ante. Pellentesque dui ligula, hendrerit a purus et, volutpat tempor lectus. Mauris nec purus nec mauris rhoncus pellentesque. Quisque quis diam sed est lacinia congue. Donec magna est, hendrerit sed metus vel, accumsan rutrum nibh.
+% Aenean porttitor eros non pharetra congue. Proin in odio in dolor luctus auctor ac et mi. Etiam euismod mi sed lectus fringilla pretium. Phasellus tristique maximus lectus et sodales. Mauris feugiat ligula quis semper luctus. Nam sit amet felis sed leo fermentum aliquet. Mauris arcu dui, posuere id sem eget, cursus pulvinar mi. Donec nec lacus non lectus fermentum scelerisque et at nibh. Sed tristique, metus ac vestibulum porta, tortor lectus placerat lorem, et convallis tellus dolor eget ante. Pellentesque dui ligula, hendrerit a purus et, volutpat tempor lectus. Mauris nec purus nec mauris rhoncus pellentesque. Quisque quis diam sed est lacinia congue. Donec magna est, hendrerit sed metus vel, accumsan rutrum nibh.
 
-\begin{figure*} % Two column figure (notice the starred environment)
-	\includegraphics[width=\linewidth]{Fibroblastid.jpg}
-	\caption{Bovine pulmonary artery endothelial cells in culture. Blue: nuclei; red: mitochondria; green: microfilaments. Computer generated image from a 3D model based on a confocal laser scanning microscopy using fluorescent marker dyes. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}.}
-	\label{fig:bpartery}
-\end{figure*}
+% \begin{figure*} % Two column figure (notice the starred environment)
+% 	\includegraphics[width=\linewidth]{Fibroblastid.jpg}
+% 	\caption{Bovine pulmonary artery endothelial cells in culture. Blue: nuclei; red: mitochondria; green: microfilaments. Computer generated image from a 3D model based on a confocal laser scanning microscopy using fluorescent marker dyes. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}.}
+% 	\label{fig:bpartery}
+% \end{figure*}
 
-Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam cursus lectus purus, tempus iaculis quam dictum tristique. Nam interdum sapien nec tempor mattis. Quisque id sapien nisi. Mauris vehicula ornare eros vel efficitur. Nulla consectetur, turpis quis fringilla tincidunt, mi neque iaculis lectus, vel commodo elit odio non ex. Duis facilisis, purus ac viverra iaculis, turpis lectus ultrices ante, ac vestibulum ligula magna in libero. Etiam tristique maximus lacinia. Vestibulum hendrerit, lacus malesuada laoreet blandit, sapien velit sollicitudin nunc, eu porttitor urna ligula at lorem. Aliquam faucibus eros in fermentum venenatis. Fusce consectetur congue pellentesque. Suspendisse at nisi sit amet est porttitor cursus. Cras placerat faucibus nunc, a laoreet justo dignissim sit amet.
+% Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam cursus lectus purus, tempus iaculis quam dictum tristique. Nam interdum sapien nec tempor mattis. Quisque id sapien nisi. Mauris vehicula ornare eros vel efficitur. Nulla consectetur, turpis quis fringilla tincidunt, mi neque iaculis lectus, vel commodo elit odio non ex. Duis facilisis, purus ac viverra iaculis, turpis lectus ultrices ante, ac vestibulum ligula magna in libero. Etiam tristique maximus lacinia. Vestibulum hendrerit, lacus malesuada laoreet blandit, sapien velit sollicitudin nunc, eu porttitor urna ligula at lorem. Aliquam faucibus eros in fermentum venenatis. Fusce consectetur congue pellentesque. Suspendisse at nisi sit amet est porttitor cursus. Cras placerat faucibus nunc, a laoreet justo dignissim sit amet.
 
-\subsection{International Support}
+% \subsection{International Support}
 
-\noindent àáâäãåèéêëìíîïòóôöõøùúûüÿýñçčšž
+% \noindent àáâäãåèéêëìíîïòóôöõøùúûüÿýñçčšž
 
-\noindent ÀÁÂÄÃÅÈÉÊËÌÍÎÏÒÓÔÖÕØÙÚÛÜŸÝÑ
+% \noindent ÀÁÂÄÃÅÈÉÊËÌÍÎÏÒÓÔÖÕØÙÚÛÜŸÝÑ
 
-\noindent ßÇŒÆČŠŽ
+% \noindent ßÇŒÆČŠŽ
 
-\subsection{Links}
+% \subsection{Links}
 
-This is a clickable URL link: \href{https://www.latextemplates.com}{LaTeX Templates}. This is a clickable email link: \href{mailto:vel@latextemplates.com}{vel@latextemplates.com}. This is a clickable monospaced URL link: \url{https://www.LaTeXTemplates.com}.
+% This is a clickable URL link: \href{https://www.latextemplates.com}{LaTeX Templates}. This is a clickable email link: \href{mailto:vel@latextemplates.com}{vel@latextemplates.com}. This is a clickable monospaced URL link: \url{https://www.LaTeXTemplates.com}.
 
 %------------------------------------------------
 
@@ -468,5 +570,11 @@ Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam
 	\label{fig:encoder_decoder}
 \end{figure*}
 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{f1_image.png}
+	\caption{Variación del valor de F1 en dependencia de los argumentos.}
+	\label{fig:f1_plot}
+\end{figure}
 
 \end{document}
