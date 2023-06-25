@@ -5,6 +5,8 @@ import math
 import nltk
 from collections import Counter
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def build_recipe_graph(json: Dict, recipe_probability=1.0) -> nx.Graph:
@@ -176,6 +178,35 @@ def build_general_recipe_recipe_graph(json: dict, recipe_vectorizer: Callable[[d
                 G.add_edge(recipe1, recipe2, weight=sim)
     return G
 
+
+def build_tfidf_graph(nodes: list[str], threshold=0.5) -> nx.Graph:
+    
+    def get_recipe_tf_idf_vectors(nodes: list[str]) -> Tuple[Dict[str, List[int]], np.matrix, TfidfVectorizer]:
+        """
+        Given a graph in json format, returns a dictionary with the vector representation for all recipes.
+        """
+        
+        estimator = TfidfVectorizer(use_idf=False)
+        tfidf = estimator.fit_transform(nodes)
+        return {x: tfidf[i] for i, x in enumerate(nodes)}, tfidf, estimator
+
+    def similarity(x, y):
+        return cosine_similarity(x, y)
+
+    dict, matrix, estimator = get_recipe_tf_idf_vectors(nodes)
+
+    G = nx.Graph()
+
+    for i, node1 in enumerate(nodes[:-1]):
+        G.add_node(node1)
+        sim = similarity(matrix[i+1:], matrix[i])
+        for k, val in enumerate(sim, i+1):
+            if val >= threshold:
+                val = val[0]
+                node2 = nodes[k]
+                G.add_edge(node1, node2, weight=val)
+
+    return G
 
 def build_weighted_graph_from_edge_list(edge_list: list[(float, str, str)]) -> nx.Graph:
     G = nx.Graph()

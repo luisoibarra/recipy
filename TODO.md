@@ -64,3 +64,7 @@
   - Poner fotos de los features
   - Explicar opciones
   - Etc.
+
+## Other
+
+- Realizar clustering de ingredientes por similitud vectorial TF-IDF.
