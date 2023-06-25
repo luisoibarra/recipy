@@ -96,12 +96,12 @@ confeccionar la receta dada.
 
 Se define como un grafo bipartito y no dirigido, formado por dos grupos: los ingredientes y el conjunto de acciones que se emplean sobre esos ingredientes. 
 
-Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com}, se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo \emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que pertenece cada acción y cada ingrediente. 
+Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com}, se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo \emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que pertenece cada acción y cada ingrediente (fig. \ref{fig:ingredient-action-graph}). 
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{action-ingredient-graph.png}
 	\caption{Grafo Ingrediente-Acción (8223 nodos y 55547 aristas).}
-	\label{fig:encoder_decoder_small}
+	\label{fig:ingredient-action-graph}
 \end{figure}
 
 Dicho de otra forma,
@@ -329,12 +329,12 @@ de la relevancia.
 
 Dado un ingrediente, es posible hacer una lista ordenada de aquellos otros por los que puede ser sustituido. Esto se logra tomando la partición del grafo \emph{ingrediente-ingrediente} a la cual pertenece el ingrediente dado para obtener una lista de posibles reemplazos. Luego, se ordenan estos de acuerdo al índice de Jaccard de la cantidad de acciones comunes entre ambos ingredientes, utilizando el grafo de $<$acción, ingrediente$>$. De esta forma se obtiene una medida, para cada elemento de la lista obtenida, de cuan seguro es usar dicho ingrediente como reemplazo del original. 
 
-Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro de texto y se le muestra el una lista con los elementos por los cuales puede ser sustituido.
+Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro de texto y se le muestra una lista con los elementos por los cuales puede ser sustituido (fig. \ref{fig:ingredient-replacement}).
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{ingredient-replacement.jpeg}
 	\caption{Página de reemplazo de ingredientes.}
-	\label{fig:ingredient-repalcement}
+	\label{fig:ingredient-replacement}
 \end{figure}
 
 
