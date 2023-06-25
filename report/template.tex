@@ -53,8 +53,6 @@
 % Affiliations are output in the \date{} command
 \date{\footnotesize\textsuperscript{\textbf{1}}Facultad de Matemática y Computación, Universidad de La Habana}
 
-
-
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -67,10 +65,62 @@
 
 \section{Introducción}
 
-El procesamiento de redes complejas es un campo en constante evolución que permite la representación y análisis de sistemas complejos a través de la creación de grafos. En este trabajo, se explorará el uso de un conjunto de recetas para la creación de grafos que permitan extraer información relevante sobre las mismas. A través del análisis de estas redes, se espera obtener una comprensión más profunda de las interacciones y relaciones entre los elementos del sistema. 
+El procesamiento de redes complejas es un campo en constante evolución que permite la representación y análisis 
+de sistemas complejos a través de la creación de grafos. En este trabajo, se explorará el uso de un conjunto de 
+recetas para la creación de grafos que permitan extraer información relevante sobre las mismas. A través del 
+análisis de estas redes, se espera obtener una comprensión más profunda de las interacciones y relaciones entre 
+los elementos del sistema. 
 
-Se plantea la construcción de distintos sistemas que permitan realizar distintos análisis sobre el dataset Food.com, a partir de los cuales se definirán y evaluarán un conjunto de consultas para la extracción de información relevante. Por último, se propone la elaboración de una herramienta informática que permita acceder de forma sencilla a la información extraída.
+Se plantea la construcción de distintos sistemas que permitan realizar distintos análisis sobre el dataset 
+Food.com, a partir de los cuales se definirán y evaluarán un conjunto de consultas para la extracción de 
+información relevante. Por último, se propone la elaboración de una herramienta informática que permita acceder 
+de forma sencilla a la información extraída.
 
+
+%------------------------------------------------
+
+\section{Datos}
+
+Se analizaron tres conjuntos de datos cada uno provisto con diferentes elementos y dimensiones
+(Tabla \ref{tab:data_features}):
+
+\begin{itemize}
+	\item Cocina al Minuto
+	\item Food.com \autocite{majumder2019generating}
+	\item RecipeNLG \autocite{bien-etal-2020-recipenlg}
+\end{itemize}
+
+\begin{table*} % Single column table
+	\caption{Atributos de los conjuntos de datos.}
+	\centering
+	\begin{tabular}{l l l l}
+		\toprule
+		Atributo 				 & Cocina al Minuto & Food.com & RecipeNLG  \\
+		\midrule
+		Cantidad de Recetas 	 & 555				& 230,186	& 1,312,871	\\
+		Cantidad de Ingredientes & 214	 			& 14,927	& 170,204	\\
+		Cantidad de Pasos 		 & -	 			& 2,248,564	& 9,709,075	\\
+		Cantidad de Comentarios  & -	 			& 1,132,367	& -			\\
+		\bottomrule
+	\end{tabular}
+	\label{tab:data_features}
+\end{table*}
+
+\subsection{Cocina al Minuto}
+
+Conjunto de datos creado a partir del libro Cocina al Minuto. Este presenta pocas 
+muestras y no posee los pasos para la confección de la receta, por lo que no es posible algunos de 
+los análisis.
+
+\subsection{RecipeNLG}
+
+Conjunto de datos más grandes de los analizados. El tamaño de este conjunto afecta el rendimiento del motor
+de búsqueda en tiempo y espacio, necesitando más recursos de los disponibles para poder ejecutar la aplicación.
+
+\subsection{Food.com}
+
+Este conjunto de datos es el más completo con respecto a la variedad de datos que ofrece. Tiene un tamaño mediano
+y es el utilizado en la implementación final del motor de búsqueda ya que se obtiene un balance tamaño e información.
 
 %------------------------------------------------
 
@@ -92,9 +142,17 @@ confeccionar la receta dada.
 
 \subsection{Grafo Bipartito Ingrediente-Acción}
 
-Se define como un grafo bipartito y no dirigido, formado por dos grupos: los ingredientes y el conjunto de acciones que se emplean sobre esos ingredientes. 
+Se define como un grafo bipartito y no dirigido, formado por dos grupos: los ingredientes y el conjunto de 
+acciones que se emplean sobre esos ingredientes. 
 
-Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com}, se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo \emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que pertenece cada acción y cada ingrediente (fig. \ref{fig:ingredient-action-graph}). 
+Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com},
+se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo 
+\emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la 
+lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos 
+últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando 
+de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso 
+a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que 
+pertenece cada acción y cada ingrediente (fig. \ref{fig:ingredient-action-graph}). 
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{action-ingredient-graph.png}
@@ -106,7 +164,9 @@ Dicho de otra forma,
 
 $$w(X, Y) = \frac{|P_{<X,Y>}|}{|P_X \cup P_Y|}$$
 
-Donde $w(X,Y)$ representa el peso de la arista entre la acción $X$ y el ingrediente $Y$, $P_{<X,Y>}$ representa el conjunto de los pares $<X,Y>$ y $P_X$ y $P_Y$ representan los pares en los que se encuentra X e Y respectivamente.
+Donde $w(X,Y)$ representa el peso de la arista entre la acción $X$ y el ingrediente $Y$, $P_{<X,Y>}$ representa 
+el conjunto de los pares $<X,Y>$ y $P_X$ y $P_Y$ representan los pares en los que se encuentra X e Y 
+respectivamente.
 
 
 \subsection{Grafo Receta-Receta}
@@ -116,8 +176,8 @@ están ponderadas con una métrica de similitud entre recetas. Para este tipo de
 versiones basadas en diferentes métricas:
 
 \begin{enumerate}
-	\item Similitud de Jaccard entre los conjuntos de ingredientes utilizados por ambas recetas.
-	\item Similitud vectorial entre representación semántica de recetas.
+	\item Similitud de Jaccard entre los conjuntos de ingredientes utilizados por ambas recetas (Figuras \ref{fig:cocina_minuto_recipe_jaccard} y \ref{fig:foodcom_recipe_jaccard}).
+	\item Similitud vectorial entre representación semántica de recetas (Figura \ref{fig:foodcom_recipe_semantic}).
 \end{enumerate}
 
 \subsubsection{Similitud de Jaccard}
@@ -134,13 +194,13 @@ Para la confección de este grafo las aristas son ponderadas mediante la similit
 	\item Se calcula la similitud de Jaccard para cada par de nodos obteniendo el peso de la arista correspondiente.
 \end{enumerate}
 
-\subsubsection{Similitud vectorial entre representación semántica de recetas}
+\subsubsection{Similitud semántica de recetas}
 
 Para la confección de este grafo se realizaron un conjunto de pasos para la vectorización semántica de las recetas.
 
 \begin{enumerate}
 	\item Se representaron las recetas como una lista de las instrucciones de su preparación.
-	\item Cada instrucción fue codificada por el modelo \textit{Universal Sentence Encoder} \autocite{Smith:2023qr}
+	\item Cada instrucción fue codificada por el modelo \textit{Universal Sentence Encoder} \autocite{cer2018universal}
 	el cual devuelve un vector de dimensión 512 por cada oración procesada, obteniendo una representación final
 	para la receta con dimensión $(CantInstrucciones, 512)$. 
 	\item Se procedió a disminuir la dimensión hasta un vector de dimensión 256. Esto se logra mediante un 
@@ -167,10 +227,10 @@ están ponderadas con una métrica de similitud entre ingredientes.
 Para este tipo de grafo se confeccionaron tres versiones basadas en diferentes métricas:
 
 \begin{enumerate}
-	\item Similitud de Jaccard entre los conjuntos de recetas utilizados por ambos ingredientes.
+	\item Similitud de Jaccard entre los conjuntos de recetas utilizados por ambos ingredientes (Figuras \ref{fig:cocina_minuto_ingredient_jaccard} \ref{fig:foodcom_ingredient_jaccard}).
 	\item Similitud vectorial entre representación sintáctica de ingredientes mediante vectorización 
 	por frecuencia de términos.
-	\item Similitud por \textit{Pointwise mutual information} (PMI) definida en \textcite{teng2012recipe}.
+	\item Similitud por \textit{Pointwise mutual information} (PMI) definida en \textcite{teng2012recipe} ((Figuras \ref{fig:cocina_minuto_ingredient_pmi} \ref{fig:foodcom_ingredient_pmi})).
 \end{enumerate}
 
 \subsubsection{Similitud de Jaccard}
@@ -267,7 +327,6 @@ cantidad. Para esto se toman diferentes estrategias en dependencia del tipo de g
 \begin{enumerate}
 	\item Ranking de recetas por valoraciones de usuarios.
 	\item Ranking de ingredientes por ocurrencias acumuladas.
-	\item Ranking de recetas por ingredientes que las usen.
 \end{enumerate}
 
 \subsubsection{Ranking de recetas por valoraciones de usuarios}
@@ -305,7 +364,11 @@ las valoraciones dadas a la receta $r$ y $R$ es el conjunto de recetas.
 
 Esta métrica previene que recetas con pocas y muy altas valoraciones tengan más importancia que recetas con muchas
 valoraciones pero más bajas. De manera que las recetas más importantes tengan que tener al mismo tiempo una gran 
-cantidad de valoraciones y que estas sean buenas (Figura \ref{fig:f1_plot}). 
+cantidad de valoraciones y que estas sean buenas (Figura \ref{fig:f1_plot}).
+
+Este algoritmo fue utilizado para reducir el número de recetas de Food.com para la construcción de los grafos 
+tipo Receta-Receta. La reducción se hizo a 5000 nodos dado que a partir de esta cantidad la relevancia de las
+recetas es muy baja (Figura \ref{fig:recipe_user_ranking_info})
 
 \subsubsection{Ranking de ingredientes por ocurrencias acumuladas}
 
@@ -318,13 +381,9 @@ Para realizar el ranking se realizan los siguientes pasos:
 	represente un porciento fijo de la suma total de todos los grados del grafo.
 \end{enumerate}
 
-\subsubsection{Ranking de recetas por ingredientes que las usen}
-
-Dado un conjunto de ingredientes se quiere encontrar las recetas que los usen, para esto se toman dos variantes.
-En primer lugar se ordena por la cantidad de ingredientes que tienen las recetas en común con los ingredientes
-requeridos. Esta aproximación lleva a que en casos de que la intersección sea completa se ordene por nombre lo que
-no necesariamente es deseable. El otro método es vectorizar las recetas por sus ingredientes mediante TF-IDF y
-realizar el ranking con la similitud de coseno entre la vectorización TF-IDF de los ingredientes consultados.
+Este algoritmo fue utilizado para reducir el número de ingredientes de Food.com para la construcción de los grafos 
+tipo Ingrediente-Ingrediente. Los ingredientes resultantes contiene un 90\% de las ocurrencias
+con solo 521 lo que representa solo el 3.5\% del total (Figura \ref{fig:ingredient_degree_ranking_info})
 
 \subsection{Ranking de Resultados a Consultas}
 \label{subsec:rank_query}
@@ -337,80 +396,16 @@ de la relevancia.
 	entidad a extraer.
 	\item Similitud Vectorial: Se calcula la similitud de coseno entre la vectorización de la consulta y los
 	vectores de la entidad. Las entidades son vectorizadas mediante una tabla TF-IDF. 
+	\item Ranking de recetas por ingredientes que las usen.
 \end{itemize}
 
-\subsection{Reemplazo de ingredientes}
+\subsubsection{Ranking de recetas por ingredientes que las usen}
 
-Dado un ingrediente, es posible hacer una lista ordenada de aquellos otros por los que puede ser sustituido. Esto se logra tomando la partición del grafo \emph{ingrediente-ingrediente} a la cual pertenece el ingrediente dado para obtener una lista de posibles reemplazos. Luego, se ordenan estos de acuerdo al índice de Jaccard de la cantidad de acciones comunes entre ambos ingredientes, utilizando el grafo de $<$acción, ingrediente$>$. De esta forma se obtiene una medida, para cada elemento de la lista obtenida, de cuan seguro es usar dicho ingrediente como reemplazo del original. 
-
-Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro de texto y se le muestra una lista con los elementos por los cuales puede ser sustituido (fig. \ref{fig:ingredient-replacement}).
-
-\begin{figure}
-	\includegraphics[width=\linewidth]{ingredient-replacement.jpeg}
-	\caption{Página de reemplazo de ingredientes.}
-	\label{fig:ingredient-replacement}
-\end{figure}
-
-\section{Datos}
-
-Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes elementos (Tabla \ref{tab:data_features}):
-
-\begin{itemize}
-	\item Cocina al Minuto
-	\item Food.com \autocite{majumder2019generating}
-	\item RecipeNLG \autocite{bien-etal-2020-recipenlg}
-\end{itemize}
-
-\begin{table*} % Single column table
-	\caption{Atributos de los conjuntos de datos.}
-	\centering
-	\begin{tabular}{l l l l}
-		\toprule
-		Atributo 				 & Cocina al Minuto & Food.com & RecipeNLG  \\
-		\midrule
-		Cantidad de Recetas 	 & 555				& 230,186	& 1,312,871	\\
-		Cantidad de Ingredientes & 214	 			& 14,927	& 170,204	\\
-		Cantidad de Pasos 		 & -	 			& 2,248,564	& 9,709,075	\\
-		Cantidad de Comentarios  & -	 			& 1,132,367	& -			\\
-		\bottomrule
-	\end{tabular}
-	\label{tab:data_features}
-\end{table*}
-
-\subsection{Cocina al Minuto}
-
-Conjunto de datos creado a partir del libro Cocina al Minuto de TODO ALGUIEN. Este presenta pocas 
-muestras y no posee los pasos para la confección de la receta, por lo que no es posible algunos de 
-los análisis.
-
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_jaccard_weighted.pdf}
-	\caption{Grafo Ingrediente-Ingrediente ponderado con Similitud de Jaccard entre Recetas.}
-	\label{fig:cocina_minuto_ingredient_jaccard}
-\end{figure}
-
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_pmi_weighted.pdf}
-	\caption{Grafo Ingrediente-Ingrediente ponderado con Métrica de PMI entre Recetas.}
-	\label{fig:cocina_minuto_ingredient_pmi}
-\end{figure}
-
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{cocina_minuto/recipe_node_weighted.pdf}
-	\caption{Grafo Receta-Receta ponderado con Similitud de Jaccard entre Ingredientes.}
-	\label{fig:cocina_minuto_recipe_pmi}
-\end{figure}
-
-\subsection{Food.com}
-
-Este conjunto de datos es el más completo con respecto a la variedad de datos que ofrece. Tiene un tamaño mediano
-y es el utilizado en la implementación final del motor de búsqueda ya que se obtiene un balance rapidez y tamaño.
-
-\subsection{RecipeNLG}
-
-El conjunto más 
-
-%------------------------------------------------
+Dado un conjunto de ingredientes se quiere encontrar las recetas que los usen, para esto se toman dos variantes.
+En primer lugar se ordena por la cantidad de ingredientes que tienen las recetas en común con los ingredientes
+requeridos. Esta aproximación lleva a que en casos de que la intersección sea completa se ordene por nombre lo que
+no necesariamente es deseable. El otro método es vectorizar las recetas por sus ingredientes mediante TF-IDF y
+realizar el ranking con la similitud de coseno entre la vectorización TF-IDF de los ingredientes consultados.
 
 \section{Motor de Búsqueda}
 
@@ -437,12 +432,6 @@ Dado una consulta devuelve las primeras mejores 100 recetas de acuerdo al criter
 (Figura \ref{fig:recipe_search_tfidf}).
 Esta consulta se realiza sobre el grafo bipartito de receta-ingrediente, filtrando los nodos recetas. 
 
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{find_recipe_streamlit.png}
-	\caption{Búsqueda de receta por nombre con ranking TF-IDF.}
-	\label{fig:recipe_search_tfidf}
-\end{figure}
-
 \subsubsection{Buscar ingredientes por nombre y ver recetas que los usan}
 
 Dado una consulta devuelve los primeros mejores 100 ingredientes de acuerdo al criterio de búsqueda seleccionado,
@@ -452,28 +441,172 @@ la búsqueda de recetas con estos, devolviendo los mejores 100 resultados de acu
 Ambas partes de la consulta se realizan sobre el grafo bipartito de receta-ingrediente, filtrando los nodos 
 ingredientes en la primera y calculando las métricas correspondientes en la segunda.
 
-\begin{figure} % Single column figure
+\subsubsection{Buscar ingrediente que mezcle bien con otro}
+
+Dado una consulta devuelve los primeros mejores 100 ingredientes de acuerdo al criterio de búsqueda seleccionado,
+estos ingredientes luego pueden ser seleccionados, devolviendo los mejores 100 ingredientes con los cuales se puede 
+complementar (Figura \ref{fig:complementary_ingredient_search_tfidf}). Esta consulta es realizada sobre el grafo 
+PMI de ingredientes.
+
+\subsubsection{Buscar recetas por similitud entre estas}
+
+La similitud entre recetas se viene dada de dos formas:
+
+\begin{itemize}
+	\item Por coincidencia de ingredientes: En este caso se devuelven las que tengan mayores conincidencias
+	con la receta dada. Calculando dichas recetas por el grafo bipartito de ingrediente-recetas (Figura \ref{fig:recipe_ingredient_tfidf}). 
+	\item Por similitud semántica: En este caso se devuelven las recetas ordenadas por pesos adyacentes
+	a la receta dada en el grafo de similitud semántica (Figura \ref{fig:recipe_semantic_tfidf}).
+\end{itemize}
+
+\subsubsection{Reemplazo de ingredientes}
+
+Dado un ingrediente, es posible hacer una lista ordenada de aquellos otros por los que puede ser sustituido. 
+Esto se logra tomando la partición del grafo \emph{ingrediente-ingrediente} a la cual pertenece el ingrediente 
+dado para obtener una lista de posibles reemplazos. Luego, se ordenan estos de acuerdo al índice de Jaccard de 
+la cantidad de acciones comunes entre ambos ingredientes, utilizando el grafo de $<$acción, ingrediente$>$. De 
+esta forma se obtiene una medida, para cada elemento de la lista obtenida, de cuan seguro es usar dicho 
+ingrediente como reemplazo del original. 
+
+Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro 
+de texto y se le muestra una lista con los elementos por los cuales puede ser sustituido 
+(Figura \ref{fig:ingredient-replacement}).
+
+\section{Conclusiones}
+
+En este trabajo se estudió e implementó una herramienta informática para la extracción de información relevante 
+del dataset de recetas Food.com a partir del uso de diversos algoritmos de Inteligancia Artificial, Sistemas de 
+Recuperación de Información y Análisis de Redes Complejas. En particular, se construyeron diversos sistemas 
+complejos a partir de las relaciones existentes entre los ingredientes, las recetas, los pasos de preparación y 
+los \textit{reviews} de usuarios existentes en el dataset mencionado, a partir de los cuales fue posible realizar 
+consultas como: Qué ingredientes puede sustituir un ingrediente dado?, Qué recetas puedo elaborar dada esta lista 
+de ingredientes?, Qué recetas son similares a una receta dada?, entre otros.
+
+%----------------------------------------------------------------------------------------
+%	 REFERENCES
+%----------------------------------------------------------------------------------------
+
+\printbibliography % Output the bibliography
+
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%	 ANEXOS
+%----------------------------------------------------------------------------------------
+\section{Anexos}
+
+\newpage
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{f1_image.png}
+	\caption{Variación del valor de F1 en dependencia de los argumentos.}
+	\label{fig:f1_plot}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{find_recipe_streamlit.png}
+	\caption{Búsqueda de receta por nombre con ranking TF-IDF.}
+	\label{fig:recipe_search_tfidf}
+\end{figure}
+
+\begin{figure}
 	\includegraphics[width=\linewidth]{find_ingredient_streamlit.png}
 	\caption{Búsqueda de ingredientes por nombre con ranking TF-IDF y de recetas para realizar con estos.}
 	\label{fig:ingredient_search_tfidf}
 \end{figure}
 
-\subsubsection{Buscar ingrediente que mezcle bien con otro}
-
-Dado una consulta devuelve los primeros mejores 100 ingredientes de acuerdo al criterio de búsqueda seleccionado,
-estos ingredientes luego pueden ser seleccionados, devolviendo los mejores 100 ingredientes con los cuales se puede 
-complementar (Figura \ref{fig:complementary_ingredient_search_tfidf}).
-Ambas partes de la consulta se realizan sobre el grafo bipartito de receta-ingrediente, filtrando los nodos 
-ingredientes en la primera y calculando las métricas correspondientes en la segunda.
-
-
-\begin{figure} % Single column figure
+\begin{figure}
 	\includegraphics[width=\linewidth]{find_complementary_ingredient_streamlit.png}
 	\caption{Búsqueda de ingredientes para complementar un ingrediente dado.}
 	\label{fig:complementary_ingredient_search_tfidf}
 \end{figure}
 
-\section{Results}
+\begin{figure}
+	\includegraphics[width=\linewidth]{find_recipe_ingredient_streamlit.png}
+	\caption{Búsqueda de ingredientes para complementar un ingrediente dado.}
+	\label{fig:recipe_ingredient_tfidf}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{find_recipe_semantic_streamlit.png}
+	\caption{Búsqueda de ingredientes para complementar un ingrediente dado.}
+	\label{fig:recipe_semantic_tfidf}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{ingredient-replacement.png}
+	\caption{Página de reemplazo de ingredientes.}
+	\label{fig:ingredient-replacement}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_jaccard_weighted.pdf}
+	\caption{Cocina al Minuto Grafo Ingrediente-Ingrediente ponderado con Similitud de Jaccard entre Recetas.}
+	\label{fig:cocina_minuto_ingredient_jaccard}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/ingredient_node_pmi_weighted.pdf}
+	\caption{Cocina al Minuto Grafo Ingrediente-Ingrediente ponderado con Métrica de PMI entre Recetas.}
+	\label{fig:cocina_minuto_ingredient_pmi}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{cocina_minuto/recipe_node_weighted.pdf}
+	\caption{Cocina al Minuto Grafo Receta-Receta ponderado con Similitud de Jaccard entre Ingredientes.}
+	\label{fig:cocina_minuto_recipe_jaccard}
+\end{figure}
+
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{foodcom/ingredient_node_weighted_foodcom.pdf}
+	\caption{Food.com Grafo Ingrediente-Ingrediente ponderado con Similitud de Jaccard entre Recetas.}
+	\label{fig:foodcom_ingredient_jaccard}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{foodcom/ingredient_node_pmi_weighted.pdf}
+	\caption{Food.com Grafo Ingrediente-Ingrediente ponderado con Métrica de PMI entre Recetas.}
+	\label{fig:foodcom_ingredient_pmi}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{foodcom/recipe_node_weighted_reduced_5000.pdf}
+	\caption{Food.com Grafo Receta-Receta ponderado con Similitud de Jaccard entre Ingredientes.}
+	\label{fig:foodcom_recipe_jaccard}
+\end{figure}
+
+\begin{figure} % Single column figure
+	\includegraphics[width=\linewidth]{foodcom/recipe_node_semantic_weighted.pdf}
+	\caption{Food.com Grafo Receta-Receta ponderado con Similitud Semántica entre Recetas.}
+	\label{fig:foodcom_recipe_semantic}
+\end{figure}
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{ingredient_degree_ranking_info.png}
+	\caption{Reporte de importancia de los ingredientes dado la cantidad de veces que son usados en las recetas.}
+	\label{fig:ingredient_degree_ranking_info}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{recipe_user_ranking_info.png}
+	\caption{Reporte de importancia de las recetas dada la métrica F1.}
+	\label{fig:recipe_user_ranking_info}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{architecture.png}
+	\caption{Arquitectura encoder-decoder para el vectorización de recetas.}
+	\label{fig:encoder_decoder}
+\end{figure*}
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
+
+
+% \section{Results}
 
 % \begin{table} % Single column table
 % 	\caption{Example single column table.}
@@ -543,52 +676,3 @@ ingredientes en la primera y calculando las métricas correspondientes en la seg
 % This is a clickable URL link: \href{https://www.latextemplates.com}{LaTeX Templates}. This is a clickable email link: \href{mailto:vel@latextemplates.com}{vel@latextemplates.com}. This is a clickable monospaced URL link: \url{https://www.LaTeXTemplates.com}.
 
 %------------------------------------------------
-
-\section{Discussion}
-
-This statement requires citation \autocite{Smith:2023qr}. This statement requires multiple citations \autocite{Smith:2023qr, Smith:2024jd}. This statement contains an in-text citation, for directly referring to a citation like so: \textcite{Smith:2024jd}.
-
-\subsection{Subsection One}
-
-Suspendisse potenti. Vivamus suscipit dapibus metus. Proin auctor iaculis ex, id fermentum lectus dapibus tristique. Nullam maximus eros eget leo pretium dapibus. Nunc in auctor erat, id interdum risus. Suspendisse aliquet vehicula accumsan. In vestibulum efficitur dictum. Sed ultrices, libero nec fringilla feugiat, elit massa auctor ligula, vehicula tempor ligula felis in lectus. Suspendisse sem dui, pharetra ut sodales eu, suscipit sit amet felis. Donec pretium viverra ante, ac pulvinar eros. Suspendisse gravida consectetur urna. Pellentesque vitae leo porta, imperdiet eros eget, posuere sem. Praesent eget leo efficitur odio bibendum condimentum sit amet vel ex. Nunc maximus quam orci, quis pulvinar nibh eleifend ac. Quisque consequat lacus magna, eu posuere tellus iaculis ac. Sed vitae tortor tincidunt ante sagittis iaculis.
-
-\subsection{Subsection Two}
-
-Nullam mollis tellus lorem, sed congue ipsum euismod a. Donec pulvinar neque sed ligula ornare sodales. Nulla sagittis vel lectus nec laoreet. Nulla volutpat malesuada turpis at ultricies. Ut luctus velit odio, sagittis volutpat erat aliquet vel. Donec ac neque eget neque volutpat mollis. Vestibulum viverra ligula et sapien bibendum, vel vulputate ex euismod. Curabitur nec velit velit. Aliquam vulputate lorem elit, id tempus nisl finibus sit amet. Curabitur ex turpis, consequat at lectus id, imperdiet molestie augue. Curabitur eu eros molestie purus commodo hendrerit. Quisque auctor ipsum nec mauris malesuada, non fringilla nibh viverra. Quisque gravida, metus quis semper pulvinar, dolor nisl suscipit leo, vestibulum volutpat ante justo ultrices diam. Sed id facilisis turpis, et aliquet eros.
-
-\subsubsection{Subsubsection Example}
-
-Duis venenatis eget lectus a aliquet. Integer vulputate ante suscipit felis feugiat rutrum. Aliquam eget dolor eu augue elementum ornare. Nulla fringilla interdum volutpat. Sed tincidunt, neque quis imperdiet hendrerit, turpis sapien ornare justo, ac blandit felis sem quis diam. Proin luctus urna sit amet felis tincidunt, sed congue nunc pellentesque. Ut faucibus a magna faucibus finibus. Etiam id mi euismod, auctor nisi eget, pretium metus. Proin tincidunt interdum mi non interdum. Donec semper luctus dolor at elementum. Aenean eu congue tortor, sed hendrerit magna. Quisque a dolor ante. Mauris semper id urna id gravida. Vestibulum mi tortor, finibus eu felis in, vehicula aliquam mi.
-
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. 
-
-Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam vitae suscipit mi. Pellentesque ex tellus, iaculis vel libero at, cursus pretium sapien. Curabitur accumsan velit sit amet nulla lobortis, ut pretium ex aliquam. Proin eget volutpat orci. Morbi eu aliquet turpis. Vivamus molestie urna quis tempor tristique. Proin hendrerit sem nec tempor sollicitudin.
-
-%----------------------------------------------------------------------------------------
-%	 REFERENCES
-%----------------------------------------------------------------------------------------
-
-\printbibliography % Output the bibliography
-
-%----------------------------------------------------------------------------------------
-
-\section{Conclusiones}
-
-En este trabajo se estudió e implementó una herramienta informática para la extracción de información relevante del dataset de recetas Food.com a partir del uso de diversos algoritmos de Inteligancia Artificial, Sistemas de Recuperación de Información y Análisis de Redes Complejas. En particular, se construyeron diversos sistemas complejos a partir de las relaciones existentes entre los ingredientes, las recetas, los pasos de preparación y los \textit{reviews} de usuarios existentes en el dataset mencionado, a partir de los cuales fue posible realizar consultas como: Qué ingredientes puede sustituir un ingrediente dado?, Qué recetas puedo elaborar dada esta lista de ingredientes?, Qué recetas son similares a una receta dada?, entre otros. 
-
-\section{Anexos}
-
-\begin{figure*}
-	\includegraphics[width=\linewidth]{architecture.png}
-	\caption{Arquitectura encoder-decoder para el vectorización de recetas.}
-	\label{fig:encoder_decoder}
-\end{figure*}
-
-
-\begin{figure}
-	\includegraphics[width=\linewidth]{f1_image.png}
-	\caption{Variación del valor de F1 en dependencia de los argumentos.}
-	\label{fig:f1_plot}
-\end{figure}
-
-\end{document}
