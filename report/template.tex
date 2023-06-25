@@ -53,12 +53,7 @@
 % Affiliations are output in the \date{} command
 \date{\footnotesize\textsuperscript{\textbf{1}}Facultad de Matemática y Computación, Universidad de La Habana}
 
-% Full-width abstract
-\renewcommand{\maketitlehookd}{%
-	\begin{abstract}
-		\noindent Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit. Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor.
-	\end{abstract}
-}
+
 
 %----------------------------------------------------------------------------------------
 
@@ -70,24 +65,12 @@
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
-\section{Introduction}
+\section{Introducción}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent porttitor arcu luctus, imperdiet urna iaculis, mattis eros. Pellentesque iaculis odio vel nisl ullamcorper, nec faucibus ipsum molestie. Sed dictum nisl non aliquet porttitor. Etiam vulputate arcu dignissim, finibus sem et, viverra nisl. Aenean luctus congue massa, ut laoreet metus ornare in. Nunc fermentum nisi imperdiet lectus tincidunt vestibulum at ac elit. Nulla mattis nisl eu malesuada suscipit.
+El procesamiento de redes complejas es un campo en constante evolución que permite la representación y análisis de sistemas complejos a través de la creación de grafos. En este trabajo, se explorará el uso de un conjunto de recetas para la creación de grafos que permitan extraer información relevante sobre las mismas. A través del análisis de estas redes, se espera obtener una comprensión más profunda de las interacciones y relaciones entre los elementos del sistema. 
 
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Donec laoreet nisl vel risus lacinia elementum non nec lacus. Nullam luctus, nulla volutpat ultricies ultrices, quam massa placerat augue, ut fringilla urna lectus nec nibh. Vestibulum efficitur condimentum orci a semper. Pellentesque ut metus pretium lacus maximus semper.
+Se plantea la construcción de distintos sistemas que permitan realizar distintos análisis sobre el dataset Food.com, a partir de los cuales se definirán y evaluarán un conjunto de consultas para la extracción de información relevante. Por último, se propone la elaboración de una herramienta informática que permita acceder de forma sencilla a la información extraída.
 
-Fusce varius orci ac magna dapibus porttitor. In tempor leo a neque bibendum sollicitudin. Nulla pretium fermentum nisi, eget sodales magna facilisis eu. Praesent aliquet nulla ut bibendum lacinia. Donec vel mauris vulputate, commodo ligula ut, egestas orci. Suspendisse commodo odio sed hendrerit lobortis. Donec finibus eros erat, vel ornare enim mattis et. Donec finibus dolor quis dolor tempus consequat. Mauris fringilla dui id libero egestas, ut mattis neque ornare. Ut condimentum urna pharetra ipsum consequat, eu interdum elit cursus. Vivamus scelerisque tortor et nunc ultricies, id tincidunt libero pharetra. Aliquam eu imperdiet leo. Morbi a massa volutpat velit condimentum convallis et facilisis dolor.
-
-\begin{equation}
-	\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
-	\label{eq:example}
-\end{equation}
-
-Automatically referencing an equation number using its label: Equation \ref{eq:example}.
-
-In hac habitasse platea dictumst. Curabitur mattis elit sit amet justo luctus vestibulum. In hac habitasse platea dictumst. Pellentesque lobortis justo enim, a condimentum massa tempor eu. Ut quis nulla a quam pretium eleifend nec eu nisl. Nam cursus porttitor eros, sed luctus ligula convallis quis. Nam convallis, ligula in auctor euismod, ligula mauris fringilla tellus, et egestas mauris odio eget diam. Praesent sodales in ipsum eu dictum. Aenean vel enim ipsum. Fusce ut felis at eros sagittis bibendum mollis lobortis libero.
-
-Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ultrices non tincidunt et, tincidunt ut quam. Integer luctus posuere est, non maximus ante dignissim quis. Nunc a cursus erat. Curabitur suscipit nibh in tincidunt sagittis. Nam malesuada vestibulum quam id gravida. Proin ut dapibus velit. Vestibulum eget quam quis ipsum semper convallis. Duis consectetur nibh ac diam dignissim, id condimentum enim dictum. Nam aliquet ligula eu magna pellentesque, nec sagittis leo lobortis. Aenean tincidunt dignissim egestas.
 
 %------------------------------------------------
 
@@ -111,7 +94,22 @@ confeccionar la receta dada.
 
 \subsubsection{Grafo Bipartito Ingrediente-Acción}
 
-TODO
+Se define como un grafo bipartito y no dirigido, formado por dos grupos: los ingredientes y el conjunto de acciones que se emplean sobre esos ingredientes. 
+
+Para la construcción se tomó el conjunto de instrucciones que posee cada receta del dataset \textit{Food.com}, se extrajo la lista de tokens para cada instrucción y se clasificaron los mismos utilizando el módulo \emph{tokenize} de \textit{nltk} y el método \emph{$pos\_tag\_sents$} de esta misma biblioteca. Dada la lista de tokens descrita anteriormente, se filtraron los verbos y los sustantivos, haciendo coincidir estos últimos con la lista de ingredientes usados en la receta, y se les asignó la acción correspondiente, formando de esta forma pares $<$acción, ingrediente$>$ que definen las aristas del grafo. Por último, se le asignó peso a las aristas de acuerdo al índice \textit{Intersection Over Union (IOU)} de la cantidad de pares a los que pertenece cada acción y cada ingrediente. 
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{action-ingredient-graph.png}
+	\caption{Grafo Ingrediente-Acción (8223 nodos y 55547 aristas).}
+	\label{fig:encoder_decoder_small}
+\end{figure}
+
+Dicho de otra forma,
+
+$$w(X, Y) = \frac{|P_{<X,Y>}|}{|P_X \cup P_Y|}$$
+
+Donde $w(X,Y)$ representa el peso de la arista entre la acción $X$ y el ingrediente $Y$, $P_{<X,Y>}$ representa el conjunto de los pares $<X,Y>$ y $P_X$ y $P_Y$ representan los pares en los que se encuentra X e Y respectivamente.
+
 
 \subsubsection{Grafo Receta-Receta}
 
@@ -327,6 +325,19 @@ de la relevancia.
 	vectores de la entidad. Las entidades son vectorizadas mediante una tabla TF-IDF. 
 \end{itemize}
 
+\subsection{Reemplazo de ingredientes}
+
+Dado un ingrediente, es posible hacer una lista ordenada de aquellos otros por los que puede ser sustituido. Esto se logra tomando la partición del grafo \emph{ingrediente-ingrediente} a la cual pertenece el ingrediente dado para obtener una lista de posibles reemplazos. Luego, se ordenan estos de acuerdo al índice de Jaccard de la cantidad de acciones comunes entre ambos ingredientes, utilizando el grafo de $<$acción, ingrediente$>$. De esta forma se obtiene una medida, para cada elemento de la lista obtenida, de cuan seguro es usar dicho ingrediente como reemplazo del original. 
+
+Se implementó una herramienta usando streamlit mediante la cual el usuario inserta un ingrediente en un cuadro de texto y se le muestra el una lista con los elementos por los cuales puede ser sustituido.
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{ingredient-replacement.jpeg}
+	\caption{Página de reemplazo de ingredientes.}
+	\label{fig:ingredient-repalcement}
+\end{figure}
+
+
 \section{Experimentación y Resultados}
 
 Para la confección del motor de búsqueda de recetas se conformó un paquete de Python, \textbf{recipy}, el cual
@@ -361,97 +372,6 @@ Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes eleme
 
 %------------------------------------------------
 
-\section{Results}
-
-\begin{table} % Single column table
-	\caption{Example single column table.}
-	\centering
-	\begin{tabular}{l l r}
-		\toprule
-		\multicolumn{2}{c}{Location} \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km & 200km & 422 \\
-		350km & 1000km & 1833 \\
-		600km & 1200km & 890 \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:distcounts}
-\end{table}
-
-Referencing a table using its label: Table \ref{tab:distcounts}.
-
-\begin{table*} % Full width table (notice the starred environment)
-	\caption{Example two column table with fixed-width columns.}
-	\centering % Horizontally center the table
-	\begin{tabular}{L{0.2\linewidth} L{0.2\linewidth} R{0.15\linewidth}} % Manually specify column alignments with L{}, R{} or C{} and widths as a fixed amount, usually as a proportion of \linewidth
-		\toprule
-		\multicolumn{2}{c}{Location} \\
-		\cmidrule(r){1-2}
-		East Distance & West Distance & Count \\
-		\midrule
-		100km & 200km & 422 \\
-		350km & 1000km & 1833 \\
-		600km & 1200km & 890 \\
-		\bottomrule
-	\end{tabular}
-\end{table*}
-
-Aenean feugiat pellentesque venenatis. Sed faucibus tristique tortor vel ultrices. Donec consequat tellus sapien. Nam bibendum urna mauris, eget sagittis justo gravida vel. Mauris nisi lacus, malesuada sit amet neque ut, venenatis tempor orci. Curabitur feugiat sagittis molestie. Duis euismod arcu vitae quam scelerisque facilisis. Praesent volutpat eleifend tortor, in malesuada dui egestas id. Donec finibus ac risus sed pellentesque. Donec malesuada non magna nec feugiat. Mauris eget nibh nec orci congue porttitor vitae eu erat. Sed commodo ipsum ipsum, in elementum neque gravida euismod. Cras mi lacus, pulvinar ut sapien ut, rutrum sagittis dui. Donec non est a metus varius finibus. Pellentesque rutrum pellentesque ligula, vitae accumsan nulla hendrerit ut.
-
-\begin{figure} % Single column figure
-	\includegraphics[width=\linewidth]{Tolmukapea.jpg}
-	\caption{Anther of thale cress (Arabidopsis thaliana), fluorescence micrograph. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Tolmukapea.jpg}{https://commons.wiki-\\media.org/wiki/File:Tolmukapea.jpg}.}
-	\label{fig:tcanther}
-\end{figure}
-
-Referencing a figure using its label: Figure \ref{fig:tcanther}.
-
-Aenean porttitor eros non pharetra congue. Proin in odio in dolor luctus auctor ac et mi. Etiam euismod mi sed lectus fringilla pretium. Phasellus tristique maximus lectus et sodales. Mauris feugiat ligula quis semper luctus. Nam sit amet felis sed leo fermentum aliquet. Mauris arcu dui, posuere id sem eget, cursus pulvinar mi. Donec nec lacus non lectus fermentum scelerisque et at nibh. Sed tristique, metus ac vestibulum porta, tortor lectus placerat lorem, et convallis tellus dolor eget ante. Pellentesque dui ligula, hendrerit a purus et, volutpat tempor lectus. Mauris nec purus nec mauris rhoncus pellentesque. Quisque quis diam sed est lacinia congue. Donec magna est, hendrerit sed metus vel, accumsan rutrum nibh.
-
-\begin{figure*} % Two column figure (notice the starred environment)
-	\includegraphics[width=\linewidth]{Fibroblastid.jpg}
-	\caption{Bovine pulmonary artery endothelial cells in culture. Blue: nuclei; red: mitochondria; green: microfilaments. Computer generated image from a 3D model based on a confocal laser scanning microscopy using fluorescent marker dyes. Source: Heiti Paves, \href{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}{https://commons.wikimedia.org/wiki/File:Fibroblastid.jpg}.}
-	\label{fig:bpartery}
-\end{figure*}
-
-Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam cursus lectus purus, tempus iaculis quam dictum tristique. Nam interdum sapien nec tempor mattis. Quisque id sapien nisi. Mauris vehicula ornare eros vel efficitur. Nulla consectetur, turpis quis fringilla tincidunt, mi neque iaculis lectus, vel commodo elit odio non ex. Duis facilisis, purus ac viverra iaculis, turpis lectus ultrices ante, ac vestibulum ligula magna in libero. Etiam tristique maximus lacinia. Vestibulum hendrerit, lacus malesuada laoreet blandit, sapien velit sollicitudin nunc, eu porttitor urna ligula at lorem. Aliquam faucibus eros in fermentum venenatis. Fusce consectetur congue pellentesque. Suspendisse at nisi sit amet est porttitor cursus. Cras placerat faucibus nunc, a laoreet justo dignissim sit amet.
-
-\subsection{International Support}
-
-\noindent àáâäãåèéêëìíîïòóôöõøùúûüÿýñçčšž
-
-\noindent ÀÁÂÄÃÅÈÉÊËÌÍÎÏÒÓÔÖÕØÙÚÛÜŸÝÑ
-
-\noindent ßÇŒÆČŠŽ
-
-\subsection{Links}
-
-This is a clickable URL link: \href{https://www.latextemplates.com}{LaTeX Templates}. This is a clickable email link: \href{mailto:vel@latextemplates.com}{vel@latextemplates.com}. This is a clickable monospaced URL link: \url{https://www.LaTeXTemplates.com}.
-
-%------------------------------------------------
-
-\section{Discussion}
-
-This statement requires citation \autocite{Smith:2023qr}. This statement requires multiple citations \autocite{Smith:2023qr, Smith:2024jd}. This statement contains an in-text citation, for directly referring to a citation like so: \textcite{Smith:2024jd}.
-
-\subsection{Subsection One}
-
-Suspendisse potenti. Vivamus suscipit dapibus metus. Proin auctor iaculis ex, id fermentum lectus dapibus tristique. Nullam maximus eros eget leo pretium dapibus. Nunc in auctor erat, id interdum risus. Suspendisse aliquet vehicula accumsan. In vestibulum efficitur dictum. Sed ultrices, libero nec fringilla feugiat, elit massa auctor ligula, vehicula tempor ligula felis in lectus. Suspendisse sem dui, pharetra ut sodales eu, suscipit sit amet felis. Donec pretium viverra ante, ac pulvinar eros. Suspendisse gravida consectetur urna. Pellentesque vitae leo porta, imperdiet eros eget, posuere sem. Praesent eget leo efficitur odio bibendum condimentum sit amet vel ex. Nunc maximus quam orci, quis pulvinar nibh eleifend ac. Quisque consequat lacus magna, eu posuere tellus iaculis ac. Sed vitae tortor tincidunt ante sagittis iaculis.
-
-\subsection{Subsection Two}
-
-Nullam mollis tellus lorem, sed congue ipsum euismod a. Donec pulvinar neque sed ligula ornare sodales. Nulla sagittis vel lectus nec laoreet. Nulla volutpat malesuada turpis at ultricies. Ut luctus velit odio, sagittis volutpat erat aliquet vel. Donec ac neque eget neque volutpat mollis. Vestibulum viverra ligula et sapien bibendum, vel vulputate ex euismod. Curabitur nec velit velit. Aliquam vulputate lorem elit, id tempus nisl finibus sit amet. Curabitur ex turpis, consequat at lectus id, imperdiet molestie augue. Curabitur eu eros molestie purus commodo hendrerit. Quisque auctor ipsum nec mauris malesuada, non fringilla nibh viverra. Quisque gravida, metus quis semper pulvinar, dolor nisl suscipit leo, vestibulum volutpat ante justo ultrices diam. Sed id facilisis turpis, et aliquet eros.
-
-\subsubsection{Subsubsection Example}
-
-Duis venenatis eget lectus a aliquet. Integer vulputate ante suscipit felis feugiat rutrum. Aliquam eget dolor eu augue elementum ornare. Nulla fringilla interdum volutpat. Sed tincidunt, neque quis imperdiet hendrerit, turpis sapien ornare justo, ac blandit felis sem quis diam. Proin luctus urna sit amet felis tincidunt, sed congue nunc pellentesque. Ut faucibus a magna faucibus finibus. Etiam id mi euismod, auctor nisi eget, pretium metus. Proin tincidunt interdum mi non interdum. Donec semper luctus dolor at elementum. Aenean eu congue tortor, sed hendrerit magna. Quisque a dolor ante. Mauris semper id urna id gravida. Vestibulum mi tortor, finibus eu felis in, vehicula aliquam mi.
-
-Aliquam arcu turpis, ultrices sed luctus ac, vehicula id metus. Morbi eu feugiat velit, et tempus augue. Proin ac mattis tortor. Donec tincidunt, ante rhoncus luctus semper, arcu lorem lobortis justo, nec convallis ante quam quis lectus. Aenean tincidunt sodales massa, et hendrerit tellus mattis ac. Sed non pretium nibh. 
-
-Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam vitae suscipit mi. Pellentesque ex tellus, iaculis vel libero at, cursus pretium sapien. Curabitur accumsan velit sit amet nulla lobortis, ut pretium ex aliquam. Proin eget volutpat orci. Morbi eu aliquet turpis. Vivamus molestie urna quis tempor tristique. Proin hendrerit sem nec tempor sollicitudin.
-
 %----------------------------------------------------------------------------------------
 %	 REFERENCES
 %----------------------------------------------------------------------------------------
@@ -459,6 +379,10 @@ Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam
 \printbibliography % Output the bibliography
 
 %----------------------------------------------------------------------------------------
+
+\section{Conclusiones}
+
+En este trabajo se estudió e implementó una herramienta informática para la extracción de información relevante del dataset de recetas Food.com a partir del uso de diversos algoritmos de Inteligancia Artificial, Sistemas de Recuperación de Información y Análisis de Redes Complejas. En particular, se construyeron diversos sistemas complejos a partir de las relaciones existentes entre los ingredientes, las recetas, los pasos de preparación y los \textit{reviews} de usuarios existentes en el dataset mencionado, a partir de los cuales fue posible realizar consultas como: Qué ingredientes puede sustituir un ingrediente dado?, Qué recetas puedo elaborar dada esta lista de ingredientes?, Qué recetas son similares a una receta dada?, entre otros. 
 
 \section{Anexos}
 
