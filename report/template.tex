@@ -27,6 +27,8 @@
 	twoside, % Two side traditional mode where headers and footers change between odd and even pages, comment this option to make them fixed
 ]{LTJournalArticle}
 
+\usepackage{amsmath}
+
 \addbibresource{sample.bib} % BibLaTeX bibliography file
 
 \runninghead{Recipy - Búsqueda de Recetas} % A shortened article title to appear in the running head, leave this command empty for no running head
@@ -89,42 +91,273 @@ Maecenas consectetur metus at tellus finibus condimentum. Proin arcu lectus, ult
 
 %------------------------------------------------
 
-\section{Methodologies}
+\section{Desarrollo}
 
-\subsection{Sample Sites \& Processing}
+\subsection{Grafos}
 
-This line shows how to use a footnote to further explain or cite text\footnote{Example footnote text.}.
+Para la conformación de la base de datos para el motor de búsqueda se contruyen diferentes grafos que
+contienen información relacionada a la interacción entre los componentes que de una manera u otra conforman
+las recetas.
 
-This is a bullet point list:
+\subsubsection{Grafo Bipartito Receta-Ingrediente}
 
-\begin{itemize}
-	\item Arcu eros accumsan lorem, at posuere mi diam sit amet tortor
-	\item Fusce fermentum, mi sit amet euismod rutrum
-	\item Sem lorem molestie diam, iaculis aliquet sapien tortor non nisi
-	\item Pellentesque bibendum pretium aliquet
-\end{itemize}
+Se define como un grafo no dirigido en el cual sus nodos representan
+recetas o ingredientes y sus aristas representan la participación de un ingrediente en la confección de la receta.
+Dado que el grafo en bipartito, no se permiten las aristas entre ingredientes ni entre recetas.
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+En este grafo, el grado (\textit{degree}) del nodo representa la cantidad de recetas que necesitan
+el ingrediente dado, y de manera recíproca también representa la cantidad de ingredientes utilizados para 
+confeccionar la receta dada.
 
-This is a numbered list:
+\subsubsection{Grafo Bipartito Ingrediente-Acción}
+
+TODO
+
+\subsubsection{Grafo Receta-Receta}
+
+Se define como un grafo no dirigido en el cual sus nodos representan recetas y sus aristas
+están ponderadas con una métrica de similitud entre recetas. Para este tipo de grafo se confeccionaron dos 
+versiones basadas en diferentes métricas:
 
 \begin{enumerate}
-	\item Donec dolor arcu, rutrum id molestie in, viverra sed diam
-	\item Curabitur feugiat
-	\item Turpis sed auctor facilisis
+	\item Similitud de Jaccard entre los conjuntos de ingredientes utilizados por ambas recetas.
+	\item Similitud vectorial entre representación semántica de recetas.
 \end{enumerate}
 
-\subsection{Species Identification}
+\textbf{Similitud de Jaccard}
 
-Proin lobortis efficitur dictum. Pellentesque vitae pharetra eros, quis dignissim magna. Sed tellus leo, semper non vestibulum vel, tincidunt eu mi. Aenean pretium ut velit sed facilisis. Ut placerat urna facilisis dolor suscipit vehicula. Ut ut auctor nunc. Nulla non massa eros. Proin rhoncus arcu odio, eu lobortis metus sollicitudin eu. Duis maximus ex dui, id bibendum diam dignissim id. Aliquam quis lorem lorem. Phasellus sagittis aliquet dolor, vulputate cursus dolor convallis vel. Suspendisse eu tellus feugiat, bibendum lectus quis, fermentum nunc. Nunc euismod condimentum magna nec bibendum. Curabitur elementum nibh eu sem cursus, eu aliquam leo rutrum. Sed bibendum augue sit amet pharetra ullamcorper. Aenean congue sit amet tortor vitae feugiat.
+Para la confección de este grafo las aristas son ponderadas mediante la similitud de Jaccard (Ecuación \ref{eq:jaccard_sim}).
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+\begin{equation}
+	J(A, B) = \frac{|A \cap B|}{|A \cup B|}
+	\label{eq:jaccard_sim}
+\end{equation}
 
-\subsection{Data Analysis}
+\begin{enumerate}
+	\item Se representaron las recetas como el conjunto de ingredientes que se necesitan para ser preparadas.
+	\item Se calcula la similitud de Jaccard para cada par de nodos obteniendo el peso de la arista correspondiente.
+\end{enumerate}
 
-Vestibulum sodales orci a nisi interdum tristique. In dictum vehicula dui, eget bibendum purus elementum eu. Pellentesque lobortis mattis mauris, non feugiat dolor vulputate a. Cras porttitor dapibus lacus at pulvinar. Praesent eu nunc et libero porttitor malesuada tempus quis massa. Aenean cursus ipsum a velit ultricies sagittis. Sed non leo ullamcorper, suscipit massa ut, pulvinar erat. Aliquam erat volutpat. Nulla non lacus vitae mi placerat tincidunt et ac diam. Aliquam tincidunt augue sem, ut vestibulum est volutpat eget. Suspendisse potenti. Integer condimentum, risus nec maximus elementum, lacus purus porta arcu, at ultrices diam nisl eget urna. Curabitur sollicitudin diam quis sollicitudin varius. Ut porta erat ornare laoreet euismod. In tincidunt purus dui, nec egestas dui convallis non. In vestibulum ipsum in dictum scelerisque.
+\textbf{Similitud vectorial entre representación semántica de recetas}
 
-Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque. Mauris interdum porttitor fringilla. Proin tincidunt sodales leo at ornare. Donec tempus magna non mauris gravida luctus. Cras vitae arcu vitae mauris eleifend scelerisque. Nam sem sapien, vulputate nec felis eu, blandit convallis risus. Pellentesque sollicitudin venenatis tincidunt. In et ipsum libero. Nullam tempor ligula a massa convallis pellentesque.
+Para la confección de este grafo se realizaron un conjunto de pasos para la vectorización semántica de las recetas.
+
+\begin{enumerate}
+	\item Se representaron las recetas como una lista de las instrucciones de su preparación.
+	\item Cada instrucción fue codificada por el modelo \textit{Universal Sentence Encoder} \autocite{Smith:2023qr}
+	el cual devuelve un vector de dimensión 512 por cada oración procesada, obteniendo una representación final
+	para la receta con dimensión $(CantInstrucciones, 512)$. 
+	\item Se procedió a disminuir la dimensión hasta un vector de dimensión 256. Esto se logra mediante un 
+	entrenamiento no supervisado con modelo encoder-decoder (Figura \ref{fig:encoder_decoder_small}).
+	\item Para el peso de las aristas se utiliza la similitud de exponencial inversa de la distancia entre vectores 
+	(Ecuación \ref{eq:inverse_exp_sim})
+\end{enumerate}
+
+\begin{equation}
+	invExpSim(x, y) = e^{-||x-y||}
+	\label{eq:inverse_exp_sim}
+\end{equation}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{full_model.png}
+	\caption{Arquitectura encoder-decoder para el vectorización de recetas.}
+	\label{fig:encoder_decoder_small}
+\end{figure}
+
+\subsubsection{Grafo Ingrediente-Ingrediente}
+
+Se define como un grafo no dirigido en el cual sus nodos representan ingredientes y sus aristas
+están ponderadas con una métrica de similitud entre ingredientes. 
+Para este tipo de grafo se confeccionaron tres versiones basadas en diferentes métricas:
+
+\begin{enumerate}
+	\item Similitud de Jaccard entre los conjuntos de recetas utilizados por ambos ingredientes.
+	\item Similitud vectorial entre representación sintáctica de ingredientes mediante vectorización 
+	por frecuencia de términos.
+	\item Similitud por \textit{Pointwise mutual information} (PMI) definida en \textcite{teng2012recipe}.
+\end{enumerate}
+
+\textbf{Similitud de Jaccard}
+
+La confección de este grafo se realiza de manera similar a su contraparte de recetas.
+
+\begin{enumerate}
+	\item Los ingredientes se representan por el conjunto de recetas en los que se usan.
+	\item Se calcula la similitud de Jaccard (Ecuación \ref{eq:jaccard_sim}) entre ingredientes para ponderar las aristas
+	entre estos.
+\end{enumerate}
+
+Este grafo provee información acerca de cómo están asociados los ingredientes con las recetas. Una valor de similitud
+cercano a 1 indica que los ingredientes pertenecientes a la arista se comparten en la mayoría de las recetas en que son
+utilizados. En caso de estar cercano a 0, indica que no coinciden en casi ninguna receta dichos ingredientes.
+
+\textbf{Similitud vectorial entre representación sintáctica de ingredientes}
+
+En la confección de este grafo se realiza una transformación del nombre de los ingredientes a vectores mediante
+un conteo de las palabras presentes en su nombre.
+
+\begin{enumerate}
+	\item Cada ingrediente se representa por su nombre.
+	\item Los nombres son vectorizados a una tabla de términos de frecuencia normalizada.
+	\item Las aristas entre los ingredientes son ponderadas por la similitud de coseno entre las 
+	representaciones vectoriales de cada par de ingredientes.
+\end{enumerate}
+
+Una razón por la cual construir este grafo es para dar información acerca de las diferentes variantes de ingredientes.
+Estas distintas variantes, por lo general poseen nombres compuestos con la clase principal en su nombre, por ejemplo:
+
+\begin{itemize}
+	\item Queso
+	\item Queso Parmesano
+	\item Queso Ravioli
+	\item Queso Gouda
+\end{itemize}
+
+\textbf{Similitud por PMI}
+
+En la confección de este grafo se calcula el PMI \autocite{teng2012recipe} (Ecuación \ref{eq:pmi}) entre cada par de ingredientes:
+
+\begin{equation}
+	PMI(a, b) = \log \frac{p(a,b)}{p(a)p(b)},
+	\label{eq:pmi}
+\end{equation}
+
+donde
+
+\begin{equation*}
+	p(a) = \frac{\text{\# de recetas que contienen \textit{a}}}{\text{\# de recetas}},
+\end{equation*}
+\begin{equation*}
+	p(a,b) = \frac{\text{\# de recetas que contienen \textit{a} y \textit{b}}}{\text{\# de recetas}}.
+\end{equation*}
+
+\begin{enumerate}
+	\item Cada ingrediente es representado por el conjunto de recetas en el cual es utilizado.
+	\item Se calcula el PMI entre cada par de ingredientes y se pondera la arista con este valor.
+\end{enumerate}
+
+En este grafo, los pesos pueden llegar a ser negativos o positivos. En este caso nos interesa los pesos positivos,
+ya que estos pesos indican que la probabilidad de que coincidan dos ingredientes al mismo tiempo es mayor que la
+probabilidad que coincidan de forma independiente, por lo tanto su ocurrencia está condicionada a ser más probable
+dado que tengo un ingrediente.
+
+$$
+PMI(a,b) = \log \frac{p(a,b)}{p(a)p(b)} > 0
+$$
+$$
+\frac{p(a,b)}{p(a)p(b)} > 1
+$$
+$$
+p(a,b) > p(a)p(b)
+$$
+$$
+p(a|b)p(b) > p(a)p(b) \quad p(b|a)p(a) > p(a)p(b)
+$$
+$$
+p(a|b) > p(a) \quad p(b|a) > p(b)
+$$
+	
+\subsection{Ranking de Nodos}
+
+Dada la cantidad de nodos presentes en los grafos, en algunas situaciones existe la necesidad de reducir esta
+cantidad. Para esto se toman diferentes estrategias en dependencia del tipo de grafo con el que se trabaje:
+
+\begin{enumerate}
+	\item Ranking de recetas por valoraciones de usuarios.
+	\item Ranking de ingredientes por ocurrencias acumuladas.
+\end{enumerate}
+
+\textbf{Ranking de recetas por valoraciones de usuarios}
+
+Dado un conjunto de valoraciones a recetas dadas por usuarios se procede a definir 
+una medida de importancia con estas. Para esto se realizan los siguintes pasos:
+
+\begin{enumerate}
+	\item Se extraen para cada receta la cantidad de valoraciones y la media de estas.
+	\item Dichos valores son normalizados entre 0 y 1 al dividirlos por la cantidad máxima de ambas métricas por receta.
+	\item Se calcula la métrica F1 entre ambos valores para obtener la importancia final de la receta (Ecuación \ref{eq:f1_recipe_rank}).
+\end{enumerate}
+
+\begin{equation}
+	ImpReceta(r, Val) = F1(A(r, Val), M(r, Val)),
+	\label{eq:f1_recipe_rank}
+\end{equation}
+
+donde
+
+\begin{equation*}
+	F1(a, b) = 2 \frac{a · b}{a + b},
+\end{equation*}
+
+\begin{equation*}
+	A(r, Val) = \frac{|[r \sqsubseteq Val]|}{\max \{\,|[p \sqsubseteq Val]| \, \vert \, p \in R \, \}},
+\end{equation*}
+
+\begin{equation*}
+	M(r, Val) = \frac{mean([r \sqsubseteq Val])}{\max \{\,mean([p \sqsubseteq Val]) \, \vert \, p \in R\,\}},
+\end{equation*}
+
+$Val$ es la lista de valoraciones dadas por los usuarios, la expresión $[r \sqsubseteq Val]$ denota la lista de valores de 
+las valoraciones dadas a la receta $r$ y $R$ es el conjunto de recetas.
+
+Esta métrica previene que recetas con pocas y muy altas valoraciones tengan más importancia que recetas con muchas
+valoraciones pero más bajas. De manera que las recetas más importantes tengan que tener al mismo tiempo una gran 
+cantidad de valoraciones y que estas sean buenas. 
+
+\textbf{Ranking de ingredientes por ocurrencias acumuladas}
+
+Dado un conjunto de ingredientes se toman los que participan en la mayor cantidad de enlaces entre recetas.
+Para realizar el ranking se realizan los siguientes pasos:
+
+\begin{enumerate}
+	\item Ordenar por grado de mayor a menor los nodos ingredientes del grafo bipartito de ingredientes-recetas.
+	\item Seleccionar los ingredientes hasta que la suma total de los grados de los nodos seleccionados represente
+	un porciento fijo de la suma total de todos los grados del grafo.
+\end{enumerate}
+
+\subsection{Ranking de Resultados a Consultas}
+
+Para la extracción de ingredientes y recetas dadas una consulta se emplean dos mecanismos para hacer el cálculo
+de la relevancia.
+
+\begin{itemize}
+	\item Distancia de Levenshtein: Se calcula la distancia de Levenshtein entre la consulta y el nombre de la 
+	entidad a extraer.
+	\item Similitud Vectorial: Se calcula la similitud de coseno entre la vectorización de la consulta y los
+	vectores de la entidad. Las entidades son vectorizadas mediante una tabla TF-IDF. 
+\end{itemize}
+
+\section{Experimentación y Resultados}
+
+Para la confección del motor de búsqueda de recetas se conformó un paquete de Python, \textbf{recipy}, el cual
+contiene las funciones necesarias para la creación de grafos y consulta de grafos. Para la visualización de los
+resultados se creó una aplicación usando \textbf{streamlit} la cual permite al usuario interactuar con la API.
+
+\subsection{Datos}
+
+Se trabajaron con tres conjuntos de datos cada uno provisto con diferentes elementos (Tabla \ref{tab:data_features}):
+
+\begin{itemize}
+	\item Cocina al Minuto
+	\item Food.com \autocite{majumder2019generating}
+	\item RecipeNLG \autocite{bien-etal-2020-recipenlg}
+\end{itemize}
+
+\begin{table*} % Single column table
+	\caption{Atributos de los conjuntos de datos.}
+	\centering
+	\begin{tabular}{l l l l}
+		\toprule
+		Atributo 				 & Cocina al Minuto & Food.com & RecipeNLG  \\
+		\midrule
+		Cantidad de Recetas 	 & 555				& 230,186	& 1,312,871	\\
+		Cantidad de Ingredientes & 214	 			& 14,927	& 170,204	\\
+		Cantidad de Pasos 		 & -	 			& 2,248,564	& 9,709,075	\\
+		Cantidad de Comentarios  & -	 			& 1,132,367	&	-		\\
+		\bottomrule
+	\end{tabular}
+	\label{tab:data_features}
+\end{table*}
 
 %------------------------------------------------
 
@@ -226,5 +459,14 @@ Donec cursus maximus luctus. Vivamus lobortis eros et massa porta porttitor. Nam
 \printbibliography % Output the bibliography
 
 %----------------------------------------------------------------------------------------
+
+\section{Anexos}
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{architecture.png}
+	\caption{Arquitectura encoder-decoder para el vectorización de recetas.}
+	\label{fig:encoder_decoder}
+\end{figure*}
+
 
 \end{document}
